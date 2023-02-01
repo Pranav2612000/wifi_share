@@ -9,6 +9,14 @@
   --bg-main: #090A0A;
   --bg-footer: #202325;
 
+  --gray-02: #303437;
+  --gray-08: #979C9E;
+
+  --blue-04: #9990FF;
+  --blue-06: #6B4EFF;
+
+  --red-06: #FF5247;
+
   --page-margin: 1rem;
 }
 
@@ -27,12 +35,52 @@ body {
   background-color: var(--bg-main);
 }
 
+p {
+  margin: 0;
+}
+
+input, textarea {
+  margin: 0;
+  padding: 0;
+  padding: 0.5rem;
+
+  border: none;
+
+  box-sizing: border-box;
+}
+
+textarea:focus-visible {
+  outline-style: solid;
+  outline-color: var(--blue-06);
+  outline-width: 2px;
+}
+
+button {
+  margin: 0px;
+  padding: 0px;
+
+  background: none;
+
+  border: none;
+
+  color: var(--blue-04);
+}
+
 header {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 50px;
   box-shadow: inset 0px -2px 0px #202325;
+
+  box-sizing: border-box;
+}
+
+main {
+  height: calc(100vh - 70px);
+
+  padding-left: var(--page-margin);
+  padding-right: var(--page-margin);
 
   box-sizing: border-box;
 }

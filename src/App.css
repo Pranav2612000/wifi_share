@@ -1,7 +1,63 @@
-.text-sm {
+.text-xs {
   font-family: 'Inter';
   font-style: normal;
   font-weight: 500;
   font-size: 0.5rem;
-  line-height: 1rem;
+  line-height: 0.5rem;
+}
+
+.text-sm {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.75rem;
+  line-height: 0.75rem;
+}
+
+.text-md {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.failure {
+  color: var(--red-06); 
+}
+
+.scratchpad-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.scratchpad-input {
+  height: 400px;
+  width: 100%;
+
+  color: var(--gray-08);
+
+  border: 1px solid var(--gray-02);
+  border-radius: 8px;
+
+  background-color: var(--bg-main);
+  
+  resize: none;
+
+  margin-top: 10px;
+}
+
+.status-label[data-status=default] {
+  color: var(--gray-08);
+}
+
+.controls-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.controls-container div {
+  display: flex;
+  gap: 0.5rem;
 }
