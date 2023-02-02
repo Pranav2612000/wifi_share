@@ -1,7 +1,8 @@
 const express = require('express');
+const port = process.env.PORT || 5000;
 
 const app = express();
-const port = process.env.PORT || 5000;
+app.set('trust proxy', true);
 
 app.get('/', (req, res) => {
   res.send({ status: 200 });
