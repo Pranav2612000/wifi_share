@@ -16,7 +16,11 @@ app.get('/', (req, res) => {
 
 const server = http.createServer(app);
 
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: true
+  }
+});
 
 io.on('connection', (socket) => {
   onClientConnected(io, socket);
