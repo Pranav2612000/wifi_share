@@ -61,3 +61,29 @@
   display: flex;
   gap: 0.5rem;
 }
+
+.loader {
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader p {
+  color: #9990FF
+}
+
+.loader img {
+  animation: rotation 5s infinite linear;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
