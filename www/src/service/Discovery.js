@@ -8,6 +8,9 @@ let socket;
 
 class DiscoveryService {
   _isLoading = true;
+  _isMaster = false;
+  onlinePeers = [];
+
   constructor({
     onConnect
   }) {
@@ -34,6 +37,19 @@ class DiscoveryService {
 
     socket.on('connect_error', () => {
       console.log('error connecting to socket');
+    });
+
+    socket.on('CONNECTION_SUCCESSFUL', (data) => {
+      if (!data || !Array.isArray(data.clients)) {
+        console.log("Recvd malformed data");
+        return;
+      }
+
+      this.onlinePeers = data.clients;
+
+      if (this.onlinePeers.length === 1) {
+        this._isMaster = true;
+      }
     });
   }
 
