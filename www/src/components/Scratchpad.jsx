@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import Loader from './Loader.jsx';
 import DiscoveryService from "../service/Discovery";
@@ -19,11 +19,18 @@ const Scratchpad = () => {
   const [ peer, setPeer ] = useState(null);
   const [ loading, setLoading ] = useState(true);
   const [ updating, setUpdating ] = useState(false);
+  const [ text, setText ] = useState('');
 
   useEffect(() => {
     const peer = new DiscoveryService({
       onConnect: () => {
-        setLoading(false)
+        return;
+      },
+      onPeerReady: () => {
+        setLoading(false);
+      },
+      onNewText: (newText) => {
+        setText(newText);
       }
     });
     setPeer(peer);
@@ -33,12 +40,15 @@ const Scratchpad = () => {
     }
   }, []);
 
-  const debouncedOnTextUpdate = debounce((e) => {
+  const debouncedOnTextUpdate = useCallback(debounce((e) => {
     onTextUpdate(e);
-  });
+  }), []);
 
   const onTextUpdate = (e) => {
+
     setUpdating(true);
+
+    peer.sendUpdates(e.target.value);
 
     /* To check if autosaving state updates are working as expected */
     setTimeout(() => {
@@ -56,7 +66,9 @@ const Scratchpad = () => {
             <textarea
               className='scratchpad-input text-md'
               placeholder='Paste something here'
+              value={text}
               onKeyUp={(e) => debouncedOnTextUpdate(e)}
+              onChange={(e) => setText(e.target.value)}
             >
             </textarea>
           </section>

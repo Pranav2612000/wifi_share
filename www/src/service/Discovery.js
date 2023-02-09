@@ -12,7 +12,9 @@ class DiscoveryService {
   onlinePeers = [];
 
   constructor({
-    onConnect
+    onConnect,
+    onNewText,
+    onPeerReady
   }) {
     if (instance) {
         return this;
@@ -47,9 +49,26 @@ class DiscoveryService {
 
       this.onlinePeers = data.clients;
 
+      // If there are no other peers we are the master,
+      // and our scratchpad is the source of truth
       if (this.onlinePeers.length === 1) {
         this._isMaster = true;
+        onPeerReady();
+        return;
       }
+
+      // Otherwise we ask the server to send us the latest text
+      socket.send('REQUEST_TEXT');
+    });
+
+    socket.on('NEW_TEXT', (data) => {
+      if (!data || !data.text) {
+        console.log("Recvd malformed data");
+        return;
+      }
+
+      onNewText(data.text);
+      onPeerReady();
     });
   }
 
@@ -62,6 +81,10 @@ class DiscoveryService {
 
   find() {
     console.log('Looking for peers...');
+  }
+
+  sendUpdates(text) {
+    console.log('Sending updated text to peers', text);
   }
 
   kill() {
