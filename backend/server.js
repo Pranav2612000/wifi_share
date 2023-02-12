@@ -27,6 +27,10 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('user disconnected', getIpAddress(socket));
+
+    socket.to(address).emit('CLIENT_LEFT', {
+      address: address
+    });
   });
 
   // Triggered when some client is asking for text
