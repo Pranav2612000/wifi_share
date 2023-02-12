@@ -60,7 +60,7 @@ class DiscoveryService {
       console.log("Connected Clients: ", this.onlinePeers);
 
       // Otherwise we ask the server to send us the latest text
-      socket.send('REQUEST_TEXT');
+      socket.emit('REQUEST_TEXT');
     });
 
     socket.on('NEW_TEXT', (data) => {
