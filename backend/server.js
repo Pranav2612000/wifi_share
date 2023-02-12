@@ -1,6 +1,5 @@
 const express = require('express');
 const http = require('http');
-const requestIp = require('request-ip');
 const { Server } = require("socket.io");
 
 const onClientConnected = require('./helpers/onClientConnected');
@@ -9,13 +8,6 @@ const getIpAddress = require('./helpers/getIpAddress');
 const port = process.env.PORT || 5000;
 
 const app = express();
-
-app.use(requestIp.mw())
-
-app.use(function(req, res) {
-      const ip = req.clientIp;
-      res.end(ip);
-});
 
 app.set('trust proxy', true);
 
