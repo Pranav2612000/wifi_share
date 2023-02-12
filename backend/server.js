@@ -54,12 +54,14 @@ io.on('connection', (socket) => {
 
     // Otherwise fetch the latest text from the first client and use that
     io.to(clientSockets[0].id).emit('REQUEST_TEXT', null, function (resp) {
+      console.log('Response from a client', resp);
       // If there's an error in getting data we send back empty string
       if(!resp || !resp.text) {
         console.log("Recvd malformed data");
         socket.emit('NEW_TEXT', {
           text: ""
         });
+        return;
       }
 
       socket.emit('NEW_TEXT', {
