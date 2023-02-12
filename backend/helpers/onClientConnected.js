@@ -22,6 +22,10 @@ const onClientConnected = async (io, socket) => {
   socket.emit('CONNECTION_SUCCESSFUL', {
     clients: clientIps
   });
+
+  socket.to(address).emit('CLIENT_JOINED', {
+    address: address
+  });
 };
 
 module.exports = onClientConnected;
