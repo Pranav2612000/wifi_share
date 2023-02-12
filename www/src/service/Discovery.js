@@ -52,23 +52,27 @@ class DiscoveryService {
       // If there are no other peers we are the master,
       // and our scratchpad is the source of truth
       if (this.onlinePeers.length === 1) {
+        console.log("No other clients - so this peer is the master");
         this._isMaster = true;
-        onPeerReady();
+        onPeerReady && onPeerReady();
         return;
       }
+      console.log("Connected Clients: ", this.onlinePeers);
 
       // Otherwise we ask the server to send us the latest text
       socket.send('REQUEST_TEXT');
     });
 
     socket.on('NEW_TEXT', (data) => {
+      console.log('NEW_TEXT recvd', data);
       if (!data || !data.text) {
         console.log("Recvd malformed data");
         return;
       }
 
       onNewText(data.text);
-      onPeerReady();
+      onPeerReady && onPeerReady();
+    });
 
     socket.on('CLIENT_JOINED', (data) => {
       console.log('New client joined', data);
