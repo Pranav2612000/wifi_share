@@ -26,7 +26,8 @@ io.on('connection', (socket) => {
   onClientConnected(io, socket);
 
   socket.on('disconnect', () => {
-    console.log('user disconnected', getIpAddress(socket));
+    const address = getIpAddress(socket);
+    console.log('user disconnected', address);
 
     socket.to(address).emit('CLIENT_LEFT', {
       address: address
