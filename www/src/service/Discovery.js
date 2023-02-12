@@ -69,6 +69,21 @@ class DiscoveryService {
 
       onNewText(data.text);
       onPeerReady();
+
+    socket.on('CLIENT_JOINED', (data) => {
+      console.log('New client joined', data);
+      if (!data || !data.address) {
+        console.log('Malformed CLIENT_LEFT data');
+        return;
+      }
+
+      if (!this.onlinePeers || !Array.isArray(this.onlinePeers)) {
+        this.onlinePeers = [ data.address ];
+        return;
+      }
+
+      this.onlinePeers.push(data.address);
+    });
     });
   }
 
