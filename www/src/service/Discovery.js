@@ -110,6 +110,11 @@ class DiscoveryService {
 
       this.onlinePeers.splice(clientIdx, 1);
     });
+
+    socket.on('REQUEST_TEXT', (data, fn) => {
+      console.log('A client is requesting text');
+      fn("{ text: 'Sample mock text' }");
+    });
   }
 
   isLoading() {
