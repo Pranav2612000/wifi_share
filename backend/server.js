@@ -41,6 +41,7 @@ io.on('connection', (socket) => {
     // Kept here for testing. To be deleted later.
     console.log('Client ', client, 'called REQUEST_TEXT with data', data);
 
+    const address = getIpAddress(socket);
     const clientSockets = await io.in(address).fetchSockets();
 
     // If no other sockets exist return empty text back
