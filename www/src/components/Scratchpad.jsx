@@ -16,7 +16,6 @@ const getStatusElement = (isUpdating) => {
 };
 
 const Scratchpad = () => {
-  const [ peer, setPeer ] = useState(null);
   const [ loading, setLoading ] = useState(true);
   const [ updating, setUpdating ] = useState(false);
   const [ text, setText ] = useState('');
@@ -33,7 +32,6 @@ const Scratchpad = () => {
         setText(newText);
       }
     });
-    setPeer(peer);
 
     return function cleanup() {
       peer.kill();
@@ -47,6 +45,8 @@ const Scratchpad = () => {
   const onTextUpdate = (e) => {
 
     setUpdating(true);
+
+    const peer = new DiscoveryService({});
 
     peer.sendUpdates(e.target.value);
 
