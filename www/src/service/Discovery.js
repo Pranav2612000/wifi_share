@@ -84,6 +84,27 @@ class DiscoveryService {
 
       this.onlinePeers.push(data.address);
     });
+
+    socket.on('CLIENT_LEFT', (data) => {
+      console.log('A client left', data);
+      if (!data || !data.address) {
+        console.log('Malformed CLIENT_LEFT data');
+        return;
+      }
+
+      if (!this.onlinePeers || !Array.isArray(this.onlinePeers)) {
+        console.log('No peers online');
+        return;
+      }
+
+      const clientIdx = this.onlinePeers.indexOf(data.address);
+
+      if (clientIdx <= -1) {
+        console.log('Client not found');
+        return;
+      }
+
+      this.onlinePeers.splice(clientIdx, 1);
     });
   }
 
