@@ -34,10 +34,10 @@ io.on('connection', (socket) => {
   });
 
   // Triggered when some client is asking for text
-  socket.on('REQUEST_TEXT', async (client) => {
+  socket.on('REQUEST_TEXT', async (data, client) => {
 
     // Kept here for testing. To be deleted later.
-    console.log('Client', client, 'called REQUEST_TEXT');
+    console.log('Client ', client, 'called REQUEST_TEXT with data', data);
 
     const clientSockets = await io.in(address).fetchSockets();
 
