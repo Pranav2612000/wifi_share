@@ -124,7 +124,12 @@ class DiscoveryService {
   }
 
   sendUpdates(text) {
-    console.log('Sending updated text to peers', text);
+    console.log('Sending updated text to peers', text, socket);
+    socket.emit('UPDATE_TEXT', {
+      text: text
+    }, function (resp) {
+      Promise.resolve(true);
+    });
   }
 
   kill() {
