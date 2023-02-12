@@ -64,6 +64,18 @@ io.on('connection', (socket) => {
       });
     });
   });
+
+  socket.on('UPDATE_TEXT', async (data) => {
+    if(!data || !data.text) {
+      console.log("Recvd malformed data. Doing nothing");
+      return;
+    }
+
+    const address = getIpAddress(socket);
+    socket.to(address).emit('NEW_TEXT', {
+      text: data.text
+    });
+  });
 });
 
 server.listen(port, () => console.log(`App started on port ${port}`));
