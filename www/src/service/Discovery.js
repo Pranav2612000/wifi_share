@@ -16,8 +16,8 @@ class DiscoveryService {
     onNewText,
     onPeerReady
   }) {
-    if (instance) {
-        return this;
+    if (socket) {
+      return instance;
     }
 
     instance = this;
@@ -129,12 +129,13 @@ class DiscoveryService {
 
   kill() {
     // ignore if the socket has not been initialized
-    if (!this.socket) {
+    if (!socket) {
       return;
     }
 
     console.log('Disconnecting...');
-    this.socket.disconnect();
+    socket.disconnect();
+    socket = null;
   }
 }
 export default DiscoveryService;
