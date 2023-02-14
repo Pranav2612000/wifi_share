@@ -58,7 +58,7 @@ io.on('connection', (socket) => {
 
       // Since the data we receive is stringified, we first need to parse it
       try {
-        resp = JSON.parse(resp);
+        resp = JSON.parse(resp[0]);
       } catch (e) {
         err = e
       }
