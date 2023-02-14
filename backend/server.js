@@ -53,7 +53,7 @@ io.on('connection', (socket) => {
     }
 
     // Otherwise fetch the latest text from the first client and use that
-    io.to(clientSockets[0].id).emit('REQUEST_TEXT', null, function (resp) {
+    io.to(clientSockets[0].id).timeout(5000).emit('REQUEST_TEXT', 'test', function (err, resp) {
       console.log('Response from a client', resp);
       // If there's an error in getting data we send back empty string
       if(!resp || !resp.text) {
