@@ -56,12 +56,19 @@ io.on('connection', (socket) => {
     io.to(clientSockets[0].id).timeout(5000).emit('REQUEST_TEXT', function (err, resp) {
       console.log('Response from a client', resp);
 
+      resp = resp[0];
+      console.log('Parsed response', resp);
+
+      /*
       // Since the data we receive is stringified, we first need to parse it
       try {
         resp = JSON.parse(resp[0]);
       } catch (e) {
         err = e
       }
+
+      */
+      console.log('text', resp.text);
 
       // If there's an error in getting data we send back empty string
       if(err || !resp || !resp.text) {
