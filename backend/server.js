@@ -53,10 +53,18 @@ io.on('connection', (socket) => {
     }
 
     // Otherwise fetch the latest text from the first client and use that
-    io.to(clientSockets[0].id).timeout(5000).emit('REQUEST_TEXT', 'test', function (err, resp) {
+    io.to(clientSockets[0].id).timeout(5000).emit('REQUEST_TEXT', function (err, resp) {
       console.log('Response from a client', resp);
+
+      // Since the data we receive is stringified, we first need to parse it
+      try {
+        resp = JSON.parse(resp);
+      } catch (e) {
+        err = e
+      }
+
       // If there's an error in getting data we send back empty string
-      if(!resp || !resp.text) {
+      if(err || !resp || !resp.text) {
         console.log("Recvd malformed data");
         socket.emit('NEW_TEXT', {
           text: ""
