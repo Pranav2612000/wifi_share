@@ -71,7 +71,7 @@ io.on('connection', (socket) => {
       console.log('text', resp.text);
 
       // If there's an error in getting data we send back empty string
-      if(err || !resp || !resp.text) {
+      if(err || !resp || resp.text === null || resp.text === undefined) {
         console.log("Recvd malformed data");
         socket.emit('NEW_TEXT', {
           text: ""
