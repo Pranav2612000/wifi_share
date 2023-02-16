@@ -10,6 +10,7 @@ class DiscoveryService {
   _isLoading = true;
   _isMaster = false;
   onlinePeers = [];
+  text = '';
 
   constructor({
     onConnect,
@@ -112,8 +113,7 @@ class DiscoveryService {
     });
 
     socket.on('REQUEST_TEXT', (fn) => {
-      console.log('A client is requesting text');
-      fn({ text: 'Sample mock text' });
+      fn({ text: this.text });
     });
   }
 
@@ -135,6 +135,9 @@ class DiscoveryService {
     }, function (resp) {
       Promise.resolve(true);
     });
+
+    // Also store the latest updated text to serve to new peers which may join
+    this.text = text;
   }
 
   kill() {
