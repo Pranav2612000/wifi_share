@@ -42,18 +42,14 @@ const Scratchpad = () => {
     onTextUpdate(e);
   }), []);
 
-  const onTextUpdate = (e) => {
+  const onTextUpdate = async (e) => {
 
     setUpdating(true);
 
     const peer = new DiscoveryService({});
 
-    peer.sendUpdates(e.target.value);
-
-    /* To check if autosaving state updates are working as expected */
-    setTimeout(() => {
-      setUpdating(false);
-    }, 2000);
+    await peer.sendUpdates(e.target.value);
+    setUpdating(false);
   };
 
   return (

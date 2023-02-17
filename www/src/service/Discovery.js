@@ -128,12 +128,12 @@ class DiscoveryService {
     console.log('Looking for peers...');
   }
 
-  sendUpdates(text) {
+  async sendUpdates(text) {
     console.log('Sending updated text to peers', text, socket);
-    socket.emit('UPDATE_TEXT', {
+    const resp = await socket.emit('UPDATE_TEXT', {
       text: text
     }, function (resp) {
-      Promise.resolve(true);
+      return Promise.resolve(true);
     });
 
     // Also store the latest updated text to serve to new peers which may join
