@@ -16,7 +16,7 @@ const getStatusElement = (isUpdating) => {
 };
 
 const Scratchpad = () => {
-  const [ loading, setLoading ] = useState(true);
+  const [ loading, setLoading ] = useState(false);
   const [ updating, setUpdating ] = useState(false);
   const [ text, setText ] = useState('');
 
