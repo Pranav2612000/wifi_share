@@ -85,7 +85,7 @@ io.on('connection', (socket) => {
     });
   });
 
-  socket.on('UPDATE_TEXT', async (data) => {
+  socket.on('UPDATE_TEXT', async (data, callback) => {
     if(!data || !data.text) {
       console.log("Recvd malformed data. Doing nothing");
       return;
@@ -95,6 +95,8 @@ io.on('connection', (socket) => {
     socket.to(address).emit('NEW_TEXT', {
       text: data.text
     });
+
+    callback('UPDATE_SUCCESS');
   });
 });
 
