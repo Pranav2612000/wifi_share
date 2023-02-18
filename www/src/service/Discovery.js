@@ -130,14 +130,17 @@ class DiscoveryService {
 
   async sendUpdates(text) {
     console.log('Sending updated text to peers', text, socket);
-    const resp = await socket.emit('UPDATE_TEXT', {
-      text: text
-    }, function (resp) {
-      return Promise.resolve(true);
+    return new Promise((resolve, reject) => {
+      socket.emit('UPDATE_TEXT', {
+        text: text
+      }, (resp) => {
+        // Also store the latest updated text to serve to new peers which may join
+        this.text = text;
+
+        resolve(true);
+      });
     });
 
-    // Also store the latest updated text to serve to new peers which may join
-    this.text = text;
   }
 
   kill() {
