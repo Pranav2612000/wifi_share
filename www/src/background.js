@@ -2,6 +2,17 @@
 
 import DiscoveryService from "./service/Discovery";
 
+
+// Creates a async/await usable function to update badge text of the app
+const updateBadgeText = async (text) => {
+  return new Promise((resolve, reject) => {
+    chrome.action.setBadgeText(
+      { text: text },
+      () => { resolve(true) }
+    );
+  });
+};
+
 console.log('Starting discovery service in background');
 const peer = new DiscoveryService({
   onConnect: () => {
@@ -21,11 +32,6 @@ console.log({ peer });
 
 console.log({ chrome });
 console.log("action", chrome.action);
-chrome.action.setBadgeText(
-  { text: "ON" },
-  (err, resp) => { console.log({err, resp}) }
-);
-
 chrome.contextMenus.create(
   {
     title: 'Switch Off',
