@@ -1,4 +1,5 @@
 /*global chrome*/
+/*global onload*/
 
 import DiscoveryService from "./service/Discovery";
 
@@ -37,8 +38,7 @@ const addContextMenus = async (contextMenus) => {
   );
 }
 
-const initializeApp = () => {
-  console.log('Starting app...');
+const initializeDiscoveryService = () => {
   console.log('Starting discovery service in background');
   const peer = new DiscoveryService({
     onConnect: () => {
@@ -67,13 +67,3 @@ const initializeContextMenus = async () => {
   ]);
   console.log('Context Menus created successfully');
 }
-
-chrome.action.onClicked.addListener(
-  () => {
-    console.log('Stopping the extension');
-    chrome.action.setBadgeText(
-      { text: "OFF" },
-      (err, resp) => { console.log({err, resp}) }
-    );
-  }
-)
