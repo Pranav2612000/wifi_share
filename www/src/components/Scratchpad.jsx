@@ -4,6 +4,7 @@ import Loader from './Loader.jsx';
 import DiscoveryService from "../service/Discovery";
 import debounce from "../service/Debounce.js";
 
+const isExtension = process.env.REACT_APP_TYPE === 'extension';
 const getStatusElement = (isUpdating) => {
   if (isUpdating) {
     return (
@@ -34,6 +35,12 @@ const Scratchpad = () => {
     });
 
     return function cleanup() {
+      // If we are running this inside an extension, the background.js will handle everything
+      // we don't want to kill the peer right now.
+      if (isExtension) {
+        return;
+      }
+
       peer.kill();
     }
   }, []);

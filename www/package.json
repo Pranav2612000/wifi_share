@@ -15,8 +15,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "REACT_APP_TYPE=extension react-scripts start",
     "build": "INLINE_RUNTIME_CHUNK=false craco build",
+    "build-extension": "INLINE_RUNTIME_CHUNK=false REACT_APP_TYPE=extension craco build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
