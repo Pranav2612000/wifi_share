@@ -20,6 +20,23 @@ const removeAllContextMenus = async () => {
   });
 }
 
+const addContextMenus = async (contextMenus) => {
+  return new Promise.all(
+    contextMenus.map((contextMenu) => {
+      return new Promise((resolve, reject) => {
+        chrome.contextMenus.create({
+          title: contextMenu.title,
+          id: contextMenu.id,
+          contexts: contextMenu.contexts || ['all'],
+          type: contextMenu.type || 'normal'
+        }, () => {
+          resolve(true);
+        });
+      });
+    })
+  );
+}
+
 const initializeApp = () => {
   console.log('Starting app...');
   console.log('Starting discovery service in background');
