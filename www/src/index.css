@@ -23,6 +23,7 @@
 
 body {
   height: 512px;
+  min-width: 360px;
   max-width: var(--page-width);
 
   margin: 0;
