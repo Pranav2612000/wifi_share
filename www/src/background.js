@@ -53,15 +53,20 @@ const initializeApp = () => {
   });
 }
 
-chrome.contextMenus.create(
-  {
-    title: 'Switch Off',
-    id: 'SWITCH_OFF',
-    contexts: ['all'],
-    type: 'normal'
-  },
-  (err, resp) => { console.log('Context Menu created successfully', err, resp); }
-);
+const initializeContextMenus = async () => {
+  await removeAllContextMenus();
+  await addContextMenus([
+    {
+      title: 'Switch ON',
+      id: 'ON'
+    },
+    {
+      title: 'Switch OFF',
+      id: 'OFF'
+    }
+  ]);
+  console.log('Context Menus created successfully');
+}
 
 chrome.action.onClicked.addListener(
   () => {
