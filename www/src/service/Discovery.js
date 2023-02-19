@@ -38,8 +38,8 @@ class DiscoveryService {
       console.log('Connection disconnected');
     });
 
-    socket.on('connect_error', () => {
-      console.log('error connecting to socket');
+    socket.on('connect_error', (err) => {
+      console.log('error connecting to socket', err);
     });
 
     socket.on('CONNECTION_SUCCESSFUL', (data) => {
