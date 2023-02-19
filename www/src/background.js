@@ -12,6 +12,14 @@ const updateBadgeText = async (text) => {
   });
 };
 
+const removeAllContextMenus = async () => {
+  return new Promise((resolve, reject) => {
+    chrome.contextMenus.removeAll(() => {
+      resolve(true);
+    });
+  });
+}
+
 const initializeApp = () => {
   console.log('Starting app...');
   console.log('Starting discovery service in background');
