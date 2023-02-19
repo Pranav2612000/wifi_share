@@ -22,7 +22,7 @@ const removeAllContextMenus = async () => {
 }
 
 const addContextMenus = async (contextMenus) => {
-  return new Promise.all(
+  return Promise.all(
     contextMenus.map((contextMenu) => {
       return new Promise((resolve, reject) => {
         chrome.contextMenus.create({
