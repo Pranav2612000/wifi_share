@@ -67,3 +67,10 @@ const initializeContextMenus = async () => {
   ]);
   console.log('Context Menus created successfully');
 }
+
+const initializeApp = () => {
+  console.log('Starting background service...');
+  initializeContextMenus();
+};
+
+initializeApp();
