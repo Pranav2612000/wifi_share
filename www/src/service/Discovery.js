@@ -26,7 +26,9 @@ class DiscoveryService {
     const { SOCKET_URL } = constants;
     console.log('Setting up peer');
 
-    socket = io(SOCKET_URL);
+    socket = io(SOCKET_URL, {
+      transports: ['websocket']
+    });
 
     socket.on('connect', () => {
       console.log('Connection successful');
