@@ -19,5 +19,8 @@
   "background_color": "#ffffff",
   "background": {
     "service_worker": "static/js/background.js"
-  }
+  },
+  "permissions": [
+    "contextMenus"
+  ]
 }
