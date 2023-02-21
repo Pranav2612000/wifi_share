@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "install": "cd backend && npm i && cd ../www && npm i",
-    "dev": "nodemon backend/server.js && cd frontend && npm run start"
+    "dev": "COLOR=1 nodemon backend/server.js & cd www && npm start | cat "
   },
   "repository": {
     "type": "git",
