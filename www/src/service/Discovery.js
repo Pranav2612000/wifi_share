@@ -75,6 +75,9 @@ class DiscoveryService {
 
       onNewText(data.text);
       onPeerReady && onPeerReady();
+
+      // Also update the current text value stored in DiscoverService's state
+      this.text = data.text;
     });
 
     socket.on('CLIENT_JOINED', (data) => {
