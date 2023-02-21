@@ -21,6 +21,7 @@
     "service_worker": "static/js/background.js"
   },
   "permissions": [
-    "contextMenus"
+    "contextMenus",
+    "storage"
   ]
 }
