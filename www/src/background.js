@@ -38,6 +38,23 @@ const addContextMenus = async (contextMenus) => {
   );
 }
 
+const setValueInChromeStorage = async (key, value) => {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.set({ key: value }).then(() => {
+      console.log("Value is set to " + value);
+      resolve(true);
+    });
+  });
+}
+
+const getValueFromChromeStorage = async (key) => {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get(key).then((result) => {
+      resolve(result.key);
+    });
+  });
+}
+
 const initializeDiscoveryService = () => {
   console.log('Starting discovery service in background');
   const peer = new DiscoveryService({
