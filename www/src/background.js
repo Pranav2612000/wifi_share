@@ -69,24 +69,33 @@ const initializeDiscoveryService = () => {
   });
 }
 
-const initializeContextMenus = async () => {
+const initializeContextMenus = async (isAppEnabled) => {
+  const contextMenuText = isAppEnabled ? 'OFF' : 'ON';
   await removeAllContextMenus();
   await addContextMenus([
     {
-      title: 'Switch ON',
-      id: 'ON'
-    },
-    {
-      title: 'Switch OFF',
-      id: 'OFF'
+      title: `Switch ${contextMenuText}`,
+      id: contextMenuText,
+      onclick: toggleApp
     }
   ]);
   console.log('Context Menus created successfully');
 }
 
-const initializeApp = () => {
+const initializeApp = async () => {
   console.log('Starting background service...');
-  initializeContextMenus();
+
+  // fetch the current app state
+  let enabled = await getValueFromChromeStorage('enabled');
+
+  // if enabled is not defined ( first time after installing the app )
+  // we set it to true by default
+  if (enabled === undefined) {
+    await setValueInChromeStorage('enabled', true);
+    enabled = true;
+  }
+
+  initializeContextMenus(enabled);
 };
 
 initializeApp();
