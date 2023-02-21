@@ -75,11 +75,40 @@ const initializeContextMenus = async (isAppEnabled) => {
   await addContextMenus([
     {
       title: `Switch ${contextMenuText}`,
-      id: contextMenuText,
-      onclick: toggleApp
+      id: contextMenuText
     }
   ]);
+
+  chrome.contextMenus.onClicked.addListener((info, tab) => {
+    switch (info.menuItemId) {
+      case 'OFF':
+        killApp();
+        break;
+      case 'ON':
+        initializeApp();
+        break;
+      default:
+        break;
+    }
+  });
+
   console.log('Context Menus created successfully');
+}
+
+const toggleApp = async (data, tab) => {
+
+  console.log('Callback called', data, tab);
+  // fetch the current app state
+  let enabled = await getValueFromChromeStorage('enabled');
+
+  // toggle the state 
+  enabled = !enabled;
+
+  // redraw the contextMenus
+  initializeContextMenus(enabled);
+
+  // finally, update the state in chrome storage
+  setValueInChromeStorage('enabled', enabled);
 }
 
 const initializeApp = async () => {
@@ -97,5 +126,15 @@ const initializeApp = async () => {
 
   initializeContextMenus(enabled);
 };
+
+const killApp = async () => {
+  const enabled = false;
+
+  // redraw the contextMenus
+  initializeContextMenus(enabled);
+
+  // finally, update the state in chrome storage
+  setValueInChromeStorage('enabled', enabled);
+}
 
 initializeApp();
