@@ -29,7 +29,9 @@ const addContextMenus = async (contextMenus) => {
           title: contextMenu.title,
           id: contextMenu.id,
           contexts: contextMenu.contexts || ['all'],
-          type: contextMenu.type || 'normal'
+          type: contextMenu.type || 'normal',
+          visible: contextMenu.visible,
+          enabled: contextMenu.enabled
         }, () => {
           resolve(true);
         });
@@ -70,12 +72,19 @@ const initializeDiscoveryService = () => {
 }
 
 const initializeContextMenus = async (isAppEnabled) => {
-  const contextMenuText = isAppEnabled ? 'OFF' : 'ON';
   await removeAllContextMenus();
   await addContextMenus([
     {
-      title: `Switch ${contextMenuText}`,
-      id: contextMenuText
+      title: 'Switch ON',
+      id: 'ON',
+      visible: !isAppEnabled,
+      enabled: !isAppEnabled
+    },
+    {
+      title: 'Switch OFF',
+      id: 'OFF',
+      visible: isAppEnabled,
+      enabled: isAppEnabled
     }
   ]);
 
