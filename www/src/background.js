@@ -91,10 +91,10 @@ const initializeContextMenus = async (isAppEnabled) => {
   chrome.contextMenus.onClicked.addListener((info, tab) => {
     switch (info.menuItemId) {
       case 'OFF':
-        killApp();
+        stopApp();
         break;
       case 'ON':
-        initializeApp();
+        startApp();
         break;
       default:
         break;
@@ -146,14 +146,24 @@ const initializeApp = async () => {
   initializeContextMenus(enabled);
 };
 
-const killApp = async () => {
+const stopApp = async () => {
   const enabled = false;
 
-  // redraw the contextMenus
-  initializeContextMenus(enabled);
+  // toggle the app enabled state
+  await toggleAppState();
 
-  // finally, update the state in chrome storage
-  setValueInChromeStorage('enabled', enabled);
+  // actions to perform for stopping the app
+  console.log('App stopped successfully');
+}
+
+const startApp = async () => {
+  const enabled = true;
+
+  // toggle the app enabled state
+  await toggleAppState();
+
+  // actions to perform for starting the app
+  console.log('App started successfully');
 }
 
 initializeApp();
