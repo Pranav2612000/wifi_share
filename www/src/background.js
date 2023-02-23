@@ -104,6 +104,14 @@ const initializeContextMenus = async (isAppEnabled) => {
   console.log('Context Menus created successfully');
 }
 
+const updateContextMenu = async (id, properties) => {
+  return new Promise((resolve, reject) => {
+    chrome.contextMenus.update(id, properties, () => {
+      resolve(true);
+    });
+  });
+}
+
 const toggleApp = async (data, tab) => {
 
   console.log('Callback called', data, tab);
