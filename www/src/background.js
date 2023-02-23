@@ -112,17 +112,19 @@ const updateContextMenu = async (id, properties) => {
   });
 }
 
-const toggleApp = async (data, tab) => {
+const toggleAppState = async () => {
 
-  console.log('Callback called', data, tab);
   // fetch the current app state
   let enabled = await getValueFromChromeStorage('enabled');
 
   // toggle the state 
   enabled = !enabled;
 
-  // redraw the contextMenus
-  initializeContextMenus(enabled);
+  // update and redraw the contextMenus
+  await Promise.all([
+    updateContextMenu( 'ON', { visible: !enabled, enabled: !enabled }),
+    updateContextMenu( 'OFF', { visible: enabled, enabled: enabled }),
+  ]);
 
   // finally, update the state in chrome storage
   setValueInChromeStorage('enabled', enabled);
