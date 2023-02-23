@@ -69,6 +69,8 @@ const initializeDiscoveryService = () => {
       return;
     }
   });
+
+  return peer;
 }
 
 const initializeContextMenus = async (isAppEnabled) => {
