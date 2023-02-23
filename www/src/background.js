@@ -112,10 +112,13 @@ const updateContextMenu = async (id, properties) => {
   });
 }
 
-const toggleAppState = async () => {
+const toggleAppState = async (oldState) => {
 
-  // fetch the current app state
-  let enabled = await getValueFromChromeStorage('enabled');
+  // fetch the current app state if it isn't passed
+  let enabled = oldState;
+  if (enabled === undefined || enabled === null) {
+    enabled = await getValueFromChromeStorage('enabled');
+  }
 
   // toggle the state 
   enabled = !enabled;
@@ -150,7 +153,7 @@ const stopApp = async () => {
   const enabled = false;
 
   // toggle the app enabled state
-  await toggleAppState();
+  await toggleAppState(true);
 
   // actions to perform for stopping the app
   console.log('App stopped successfully');
@@ -160,7 +163,7 @@ const startApp = async () => {
   const enabled = true;
 
   // toggle the app enabled state
-  await toggleAppState();
+  await toggleAppState(false);
 
   // actions to perform for starting the app
   console.log('App started successfully');
