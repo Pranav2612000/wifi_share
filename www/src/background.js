@@ -148,7 +148,15 @@ const initializeApp = async () => {
     enabled = true;
   }
 
-  initializeContextMenus(enabled);
+  await initializeContextMenus(enabled);
+
+  // We do nothing if the app is in OFF state
+  if (enabled === false) {
+    return;
+  }
+
+  // otherwise
+  await _startApp();
 };
 
 const stopApp = async () => {
@@ -169,6 +177,13 @@ const startApp = async () => {
 
   // actions to perform for starting the app
   console.log('App started successfully');
+
+  await _startApp();
+}
+
+const _startApp = async () => {
+  console.log('Starting the app');
+  initializeDiscoveryService();
 }
 
 initializeApp();
