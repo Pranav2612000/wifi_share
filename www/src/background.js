@@ -165,6 +165,8 @@ const stopApp = async () => {
   // toggle the app enabled state
   await toggleAppState(true);
 
+  await updateBadgeText('OFF');
+
   // actions to perform for stopping the app
   console.log('App stopped successfully');
 }
@@ -183,6 +185,10 @@ const startApp = async () => {
 
 const _startApp = async () => {
   console.log('Starting the app');
+
+  await updateBadgeText('ON');
+
+  // start the discovery service
   initializeDiscoveryService();
 }
 
