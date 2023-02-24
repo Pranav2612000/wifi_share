@@ -73,6 +73,28 @@ const initializeDiscoveryService = () => {
   return peer;
 }
 
+const terminateDiscoveryService = () => {
+  console.log('Stopping discovery service');
+
+  // get reference to the connected peer
+  const peer = new DiscoveryService({
+    onConnect: () => {
+      return;
+    },
+    onPeerReady: () => {
+      return;
+    },
+    onNewText: (newText) => {
+      return;
+    }
+  });
+
+  // and kill it
+  peer.kill();
+
+  return true;
+}
+
 const initializeContextMenus = async (isAppEnabled) => {
   await removeAllContextMenus();
   await addContextMenus([
