@@ -3,8 +3,8 @@ import { useCallback, useEffect, useState } from "react";
 import Loader from './Loader.jsx';
 import DiscoveryService from "../service/Discovery";
 import debounce from "../service/Debounce.js";
+import { isExtension } from "../service/Extension";
 
-const isExtension = process.env.REACT_APP_TYPE === 'extension';
 const getStatusElement = (isUpdating) => {
   if (isUpdating) {
     return (

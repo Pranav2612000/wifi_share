@@ -1,5 +1,7 @@
 /*global chrome*/
 
+export const isExtension = process.env.REACT_APP_TYPE === 'extension';
+
 // Creates a async/await usable function to update badge text of the app
 export async function updateBadgeText (text) {
   return new Promise((resolve, reject) => {
