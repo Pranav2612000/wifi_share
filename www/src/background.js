@@ -1,60 +1,15 @@
 /*global chrome*/
-/*global onload*/
 
 import DiscoveryService from "./service/Discovery";
+import {
+  updateBadgeText,
+  removeAllContextMenus,
+  addContextMenus,
+  updateContextMenu,
+  setValueInChromeStorage,
+  getValueFromChromeStorage
+} from "./service/Extension";
 
-// Creates a async/await usable function to update badge text of the app
-const updateBadgeText = async (text) => {
-  return new Promise((resolve, reject) => {
-    chrome.action.setBadgeText(
-      { text: text },
-      () => { resolve(true) }
-    );
-  });
-};
-
-const removeAllContextMenus = async () => {
-  return new Promise((resolve, reject) => {
-    chrome.contextMenus.removeAll(() => {
-      resolve(true);
-    });
-  });
-}
-
-const addContextMenus = async (contextMenus) => {
-  return Promise.all(
-    contextMenus.map((contextMenu) => {
-      return new Promise((resolve, reject) => {
-        chrome.contextMenus.create({
-          title: contextMenu.title,
-          id: contextMenu.id,
-          contexts: contextMenu.contexts || ['all'],
-          type: contextMenu.type || 'normal',
-          visible: contextMenu.visible,
-          enabled: contextMenu.enabled
-        }, () => {
-          resolve(true);
-        });
-      });
-    })
-  );
-}
-
-const setValueInChromeStorage = async (key, value) => {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.set({ [key]: value }).then(() => {
-      resolve(true);
-    });
-  });
-}
-
-const getValueFromChromeStorage = async (key) => {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.get([key]).then((result) => {
-      resolve(result[key]);
-    });
-  });
-}
 
 const initializeDiscoveryService = () => {
   console.log('Starting discovery service in background');
@@ -126,14 +81,6 @@ const initializeContextMenus = async (isAppEnabled) => {
   });
 
   console.log('Context Menus created successfully');
-}
-
-const updateContextMenu = async (id, properties) => {
-  return new Promise((resolve, reject) => {
-    chrome.contextMenus.update(id, properties, () => {
-      resolve(true);
-    });
-  });
 }
 
 const toggleAppState = async (oldState) => {
