@@ -1,6 +1,10 @@
 module.exports = {
   webpack: {
     configure: (webpackConfig, {env, paths}) => {
+
+      // update the HTMLWebpackPlugin to only add main chunk to index.html
+      webpackConfig.plugins[0].userOptions.chunks = ['main'];
+
       return {
         ...webpackConfig,
         entry: {
