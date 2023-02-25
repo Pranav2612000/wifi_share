@@ -189,6 +189,8 @@ const stopApp = async () => {
 
   await updateBadgeText('OFF');
 
+  terminateDiscoveryService();
+
   // actions to perform for stopping the app
   console.log('App stopped successfully');
 }
