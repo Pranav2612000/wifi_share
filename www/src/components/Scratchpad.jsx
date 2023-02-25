@@ -22,6 +22,13 @@ const Scratchpad = () => {
   const [ text, setText ] = useState('');
 
   useEffect(() => {
+
+    // If we are running this from an extension, we've already completed our connection
+    // in our background script and so don't need to initialize DiscoveryService here
+    if (isExtension) {
+      return;
+    }
+
     const peer = new DiscoveryService({
       onConnect: () => {
         return;
