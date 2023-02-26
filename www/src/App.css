@@ -79,6 +79,10 @@
   animation: rotation 5s infinite linear;
 }
 
+[data-enabled] {
+  color: white
+}
+
 @keyframes rotation {
   from {
     transform: rotate(0deg);

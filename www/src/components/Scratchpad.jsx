@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import Loader from './Loader.jsx';
 import DiscoveryService from "../service/Discovery";
 import debounce from "../service/Debounce.js";
-import { isExtension } from "../service/Extension";
+import { isExtension, getValueFromChromeStorage } from '../service/Extension';
 
 const getStatusElement = (isUpdating) => {
   if (isUpdating) {
@@ -17,15 +17,22 @@ const getStatusElement = (isUpdating) => {
 };
 
 const Scratchpad = () => {
+  const [ enabled, setIsEnabled ] = useState(true);
   const [ loading, setLoading ] = useState(true);
   const [ updating, setUpdating ] = useState(false);
   const [ text, setText ] = useState('');
+
+  const setExtensionState = async () => {
+    const enabled = await getValueFromChromeStorage('enabled');
+    setIsEnabled(enabled);
+  };
 
   useEffect(() => {
 
     // If we are running this from an extension, we've already completed our connection
     // in our background script and so don't need to initialize DiscoveryService here
     if (isExtension) {
+      setExtensionState();
       return;
     }
 
@@ -65,6 +72,12 @@ const Scratchpad = () => {
     await peer.sendUpdates(e.target.value);
     setUpdating(false);
   };
+
+  if (isExtension && !enabled) {
+    return (
+      <p className='text-md' data-enabled={enabled}> Please switch ON the app to start sharing text </p>
+    );
+  }
 
   return (
     <main className='scratchpad-container'>
