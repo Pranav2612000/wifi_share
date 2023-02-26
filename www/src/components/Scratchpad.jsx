@@ -1,3 +1,4 @@
+/*global chrome*/
 import { useCallback, useEffect, useState } from "react";
 
 import Loader from './Loader.jsx';
@@ -33,6 +34,11 @@ const Scratchpad = () => {
     // in our background script and so don't need to initialize DiscoveryService here
     if (isExtension) {
       setExtensionState();
+      
+      chrome.runtime.sendMessage(() => { console.log('callback') }, function(response) {
+        console.log({ response });
+      });
+
       return;
     }
 
