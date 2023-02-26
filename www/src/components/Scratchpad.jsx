@@ -67,7 +67,7 @@ const Scratchpad = () => {
 
     setUpdating(true);
 
-    const peer = new DiscoveryService({});
+    const peer = new DiscoveryService();
 
     await peer.sendUpdates(e.target.value);
     setUpdating(false);

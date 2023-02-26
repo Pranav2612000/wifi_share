@@ -16,7 +16,7 @@ class DiscoveryService {
     onConnect,
     onNewText,
     onPeerReady
-  }) {
+  } = {}) {
     if (socket) {
       return instance;
     }
