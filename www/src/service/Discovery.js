@@ -21,20 +21,42 @@ class DiscoveryService {
     onNewText,
     onPeerReady
   }) {
-    this.onConnect = onConnect;
-    this.onNewText = onNewText;
-    this.onPeerReady = onPeerReady;
 
-    if (!socket) {
-      const { SOCKET_URL } = constants;
-      console.log('Setting up peer');
+    if (socket) {
+      if (onConnect) {
+        instance.onConnect = onConnect;
+      }
 
-      socket = io(SOCKET_URL, {
-        transports: ['websocket']
-      });
-    } else {
-      socket.removeAllListeners();
+      if (onNewText) {
+        instance.onNewText = onNewText;
+      }
+
+      if (onPeerReady) {
+        instance.onPeerReady = onPeerReady;
+      }
+      return instance
     }
+
+    instance = this;
+
+    if (onConnect) {
+      this.onConnect = onConnect;
+    }
+
+    if (onNewText) {
+      this.onNewText = onNewText;
+    }
+
+    if (onPeerReady) {
+      this.onPeerReady = onPeerReady;
+    }
+
+    const { SOCKET_URL } = constants;
+    console.log('Setting up peer');
+
+    socket = io(SOCKET_URL, {
+      transports: ['websocket']
+    });
 
     socket.on('connect', () => {
       console.log('Connection successful');
