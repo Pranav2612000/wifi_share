@@ -126,16 +126,6 @@ const initializeApp = async () => {
 
   // otherwise
   await _startApp();
-
-  
-  function messageReceived(msg) {
-    console.log({ msg });
-    return { data: "success" };
-  }
-
-  //for listening any message which comes from runtime
-  chrome.runtime.onMessage.addListener(messageReceived);
-  console.log("runtime attached successfully");
 };
 
 const stopApp = async () => {
@@ -171,18 +161,6 @@ const _startApp = async () => {
 
   // start the discovery service
   initializeDiscoveryService();
-
-  function messageReceived(msg) {
-    console.log({ msg });
-    if (msg) {
-      msg();
-    }
-    return { data: "success" };
-  }
-
-  //for listening any message which comes from runtime
-  chrome.runtime.onMessage.addListener(messageReceived);
-  console.log("runtime attached successfully");
 }
 
 initializeApp();
