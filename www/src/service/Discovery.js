@@ -156,6 +156,16 @@ class DiscoveryService {
 
   }
 
+  updateCallbacks({
+    onConnect,
+    onNewText,
+    onPeerReady
+  } = {}) {
+    onConnect && ( this.onConnect = onConnect );
+    onNewText && ( this.onNewText = onNewText );
+    onPeerReady && ( this.onPeerReady = onPeerReady );
+  }
+
   kill() {
     // ignore if the socket has not been initialized
     if (!socket) {
