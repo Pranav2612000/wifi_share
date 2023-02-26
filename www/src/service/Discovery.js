@@ -12,33 +12,27 @@ class DiscoveryService {
   onlinePeers = [];
   text = '';
 
-  onConnect = () => { return null };
-  onNewText = () => { return null };
-  onPeerReady = () => { return null };
-
   constructor({
     onConnect,
     onNewText,
     onPeerReady
   }) {
-    this.onConnect = onConnect;
-    this.onNewText = onNewText;
-    this.onPeerReady = onPeerReady;
-
-    if (!socket) {
-      const { SOCKET_URL } = constants;
-      console.log('Setting up peer');
-
-      socket = io(SOCKET_URL, {
-        transports: ['websocket']
-      });
-    } else {
-      socket.removeAllListeners();
+    if (socket) {
+      return instance;
     }
+
+    instance = this;
+
+    const { SOCKET_URL } = constants;
+    console.log('Setting up peer');
+
+    socket = io(SOCKET_URL, {
+      transports: ['websocket']
+    });
 
     socket.on('connect', () => {
       console.log('Connection successful');
-      this.onConnect();
+      onConnect();
       this._isLoading = false;
     });
 
@@ -63,7 +57,7 @@ class DiscoveryService {
       if (this.onlinePeers.length === 1) {
         console.log("No other clients - so this peer is the master");
         this._isMaster = true;
-        this.onPeerReady && this.onPeerReady();
+        onPeerReady && onPeerReady();
         return;
       }
       console.log("Connected Clients: ", this.onlinePeers);
@@ -79,8 +73,8 @@ class DiscoveryService {
         return;
       }
 
-      this.onNewText(data.text);
-      this.onPeerReady && this.onPeerReady();
+      onNewText(data.text);
+      onPeerReady && onPeerReady();
 
       // Also update the current text value stored in DiscoverService's state
       this.text = data.text;
