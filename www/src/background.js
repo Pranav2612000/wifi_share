@@ -10,6 +10,7 @@ import {
   getValueFromChromeStorage
 } from "./service/Extension";
 
+let communicationPort;
 
 const initializeDiscoveryService = () => {
   console.log('Starting discovery service in background');
@@ -18,6 +19,8 @@ const initializeDiscoveryService = () => {
       return;
     },
     onPeerReady: () => {
+      console.log('PR', communicationPort);
+      communicationPort.postMessage('PEER_READY');
       return;
     },
     onNewText: (newText) => {
@@ -152,6 +155,12 @@ const startApp = async () => {
   console.log('App started successfully');
 
   await _startApp();
+
+  chrome.runtime.onConnect.addListener(function (port) {
+    console.log("Port name", port.name);
+    communicationPort = port;
+    port.onDisconnect.addListener(( port ) => { console.log('Disconnected', port); });
+  });
 }
 
 const _startApp = async () => {

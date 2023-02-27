@@ -1,3 +1,4 @@
+/* global chrome */
 import { useCallback, useEffect, useState } from "react";
 
 import Loader from './Loader.jsx';
@@ -33,7 +34,15 @@ const Scratchpad = () => {
     // in our background script and so don't need to initialize DiscoveryService here
     if (isExtension) {
       setExtensionState();
-      return;
+
+      const port = chrome.runtime.connect({ name: 'discoveryServiceActions' });
+      port.onMessage.addListener(function (msg) {
+        console.log(msg);
+      });
+      return function cleanup() {
+        console.log('Closing open port');
+        port.disconnect();
+      };
     }
 
     const peer = new DiscoveryService({
