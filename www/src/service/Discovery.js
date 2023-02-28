@@ -156,6 +156,10 @@ class DiscoveryService {
 
   }
 
+  getText() {
+    return this.text;
+  }
+
   updateCallbacks({
     onConnect,
     onNewText,
