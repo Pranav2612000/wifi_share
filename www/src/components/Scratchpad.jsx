@@ -37,7 +37,10 @@ const Scratchpad = () => {
 
       const port = chrome.runtime.connect({ name: 'discoveryServiceActions' });
       port.onMessage.addListener(function (msg) {
-        console.log(msg);
+        if ( msg.type === 'STATE' ) {
+          setText(msg.data.text);
+          setLoading(msg.data.loading);
+        }
       });
       return function cleanup() {
         console.log('Closing open port');

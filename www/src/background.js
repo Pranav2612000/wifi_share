@@ -145,6 +145,21 @@ const stopApp = async () => {
   console.log('App stopped successfully');
 }
 
+
+function listener (port) {
+  console.log("Port name", port.name);
+  const peer = new DiscoveryService();
+  communicationPort = port;
+  communicationPort.postMessage({
+    type: 'STATE',
+    data: {
+      loading: peer.isLoading(),
+      text: peer.getText()
+    }
+  });
+  port.onDisconnect.addListener(( port ) => { console.log('Disconnected', port); });
+}
+
 const startApp = async () => {
   const enabled = true;
 
@@ -156,11 +171,8 @@ const startApp = async () => {
 
   await _startApp();
 
-  chrome.runtime.onConnect.addListener(function (port) {
-    console.log("Port name", port.name);
-    communicationPort = port;
-    port.onDisconnect.addListener(( port ) => { console.log('Disconnected', port); });
-  });
+  chrome.runtime.onConnect.removeListener(listener);
+  chrome.runtime.onConnect.addListener(listener);
 }
 
 const _startApp = async () => {
