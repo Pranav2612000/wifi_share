@@ -4,7 +4,11 @@ import { useCallback, useEffect, useState } from "react";
 import Loader from './Loader.jsx';
 import DiscoveryService from "../service/Discovery";
 import debounce from "../service/Debounce.js";
-import { isExtension, getValueFromChromeStorage } from '../service/Extension';
+import {
+  isExtension,
+  getValueFromChromeStorage,
+  connectScratchpadStateWithBackground
+} from '../service/Extension';
 
 const getStatusElement = (isUpdating) => {
   if (isUpdating) {
@@ -35,16 +39,13 @@ const Scratchpad = () => {
     if (isExtension) {
       setExtensionState();
 
-      const port = chrome.runtime.connect({ name: 'discoveryServiceActions' });
-      port.onMessage.addListener(function (msg) {
-        if ( msg.type === 'STATE' ) {
-          setText(msg.data.text);
-          setLoading(msg.data.loading);
-        }
+      const { closeConnection } = connectScratchpadStateWithBackground({
+        setLoading,
+        setText
       });
+
       return function cleanup() {
-        console.log('Closing open port');
-        port.disconnect();
+        closeConnection();
       };
     }
 

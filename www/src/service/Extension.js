@@ -62,3 +62,22 @@ export async function getValueFromChromeStorage (key) {
     });
   });
 }
+
+export function connectScratchpadStateWithBackground ({ setLoading, setText }) {
+  // create a runtime connection port to communicate with background.js script
+  const port = chrome.runtime.connect({ name: 'stateUpdates' });
+
+  port.onMessage.addListener(function ({ type, data }) {
+    if ( type === 'STATE' ) {
+      setText(data.text);
+      setLoading(data.loading);
+    }
+  });
+
+  return {
+    closeConnection: () => {
+      console.log('Closing open state update port');
+      port.disconnect()
+    }
+  }
+}
