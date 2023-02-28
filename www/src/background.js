@@ -10,6 +10,7 @@ import {
   getValueFromChromeStorage
 } from "./service/Extension";
 
+let communicationPort;
 
 const initializeDiscoveryService = () => {
   console.log('Starting discovery service in background');
@@ -18,6 +19,8 @@ const initializeDiscoveryService = () => {
       return;
     },
     onPeerReady: () => {
+      console.log('PR', communicationPort);
+      communicationPort.postMessage('PEER_READY');
       return;
     },
     onNewText: (newText) => {
@@ -126,16 +129,6 @@ const initializeApp = async () => {
 
   // otherwise
   await _startApp();
-
-  
-  function messageReceived(msg) {
-    console.log({ msg });
-    return { data: "success" };
-  }
-
-  //for listening any message which comes from runtime
-  chrome.runtime.onMessage.addListener(messageReceived);
-  console.log("runtime attached successfully");
 };
 
 const stopApp = async () => {
@@ -152,6 +145,21 @@ const stopApp = async () => {
   console.log('App stopped successfully');
 }
 
+
+function listener (port) {
+  console.log("Port name", port.name);
+  const peer = new DiscoveryService();
+  communicationPort = port;
+  communicationPort.postMessage({
+    type: 'STATE',
+    data: {
+      loading: peer.isLoading(),
+      text: peer.getText()
+    }
+  });
+  port.onDisconnect.addListener(( port ) => { console.log('Disconnected', port); });
+}
+
 const startApp = async () => {
   const enabled = true;
 
@@ -162,6 +170,9 @@ const startApp = async () => {
   console.log('App started successfully');
 
   await _startApp();
+
+  chrome.runtime.onConnect.removeListener(listener);
+  chrome.runtime.onConnect.addListener(listener);
 }
 
 const _startApp = async () => {
@@ -171,18 +182,6 @@ const _startApp = async () => {
 
   // start the discovery service
   initializeDiscoveryService();
-
-  function messageReceived(msg) {
-    console.log({ msg });
-    if (msg) {
-      msg();
-    }
-    return { data: "success" };
-  }
-
-  //for listening any message which comes from runtime
-  chrome.runtime.onMessage.addListener(messageReceived);
-  console.log("runtime attached successfully");
 }
 
 initializeApp();

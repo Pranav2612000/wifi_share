@@ -1,10 +1,14 @@
-/*global chrome*/
+/* global chrome */
 import { useCallback, useEffect, useState } from "react";
 
 import Loader from './Loader.jsx';
 import DiscoveryService from "../service/Discovery";
 import debounce from "../service/Debounce.js";
-import { isExtension, getValueFromChromeStorage } from '../service/Extension';
+import {
+  isExtension,
+  getValueFromChromeStorage,
+  connectScratchpadStateWithBackground
+} from '../service/Extension';
 
 const getStatusElement = (isUpdating) => {
   if (isUpdating) {
@@ -34,12 +38,15 @@ const Scratchpad = () => {
     // in our background script and so don't need to initialize DiscoveryService here
     if (isExtension) {
       setExtensionState();
-      
-      chrome.runtime.sendMessage(() => { console.log('callback') }, function(response) {
-        console.log({ response });
+
+      const { closeConnection } = connectScratchpadStateWithBackground({
+        setLoading,
+        setText
       });
 
-      return;
+      return function cleanup() {
+        closeConnection();
+      };
     }
 
     const peer = new DiscoveryService({
