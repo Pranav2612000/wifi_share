@@ -7,10 +7,42 @@ import {
   addContextMenus,
   updateContextMenu,
   setValueInChromeStorage,
-  getValueFromChromeStorage
+  getValueFromChromeStorage,
+  connectBackgroundWithScratchpad
 } from "./service/Extension";
 
 let communicationPort;
+
+
+const sendStateToPopup = (message) => {
+  // If no communication Port is set up. We don't need to send
+  // the state update
+  if (!communicationPort) {
+    return;
+  }
+
+  communicationPort.postMessage({
+    type: 'STATE',
+    data: message
+  });
+}
+
+const onBroadcastingChannelConnect = (port) => {
+  communicationPort = port;
+
+  const peer = new DiscoveryService();
+  port.postMessage({
+    type: 'STATE',
+    data: {
+      loading: peer.isLoading(),
+      text: peer.getText()
+    }
+  });
+}
+
+const onBroadcastingChannelDisconnect = () => {
+  communicationPort = null;
+}
 
 const initializeDiscoveryService = () => {
   console.log('Starting discovery service in background');
@@ -19,13 +51,12 @@ const initializeDiscoveryService = () => {
       return;
     },
     onPeerReady: () => {
-      console.log('PR', communicationPort);
-      communicationPort.postMessage('PEER_READY');
       return;
     },
     onNewText: (newText) => {
       return;
-    }
+    },
+    onStateUpdate: sendStateToPopup
   });
 
   return peer;
@@ -145,21 +176,6 @@ const stopApp = async () => {
   console.log('App stopped successfully');
 }
 
-
-function listener (port) {
-  console.log("Port name", port.name);
-  const peer = new DiscoveryService();
-  communicationPort = port;
-  communicationPort.postMessage({
-    type: 'STATE',
-    data: {
-      loading: peer.isLoading(),
-      text: peer.getText()
-    }
-  });
-  port.onDisconnect.addListener(( port ) => { console.log('Disconnected', port); });
-}
-
 const startApp = async () => {
   const enabled = true;
 
@@ -170,9 +186,6 @@ const startApp = async () => {
   console.log('App started successfully');
 
   await _startApp();
-
-  chrome.runtime.onConnect.removeListener(listener);
-  chrome.runtime.onConnect.addListener(listener);
 }
 
 const _startApp = async () => {
@@ -182,6 +195,7 @@ const _startApp = async () => {
 
   // start the discovery service
   initializeDiscoveryService();
+  connectBackgroundWithScratchpad(onBroadcastingChannelConnect, onBroadcastingChannelDisconnect);
 }
 
 initializeApp();
