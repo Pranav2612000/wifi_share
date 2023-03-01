@@ -15,11 +15,13 @@ class DiscoveryService {
   onConnect = () => { return null; };
   onNewText = () => { return null; };
   onPeerReady = () => { return null; };
+  onStateUpdate = () => { return null; };
 
   constructor({
     onConnect,
     onNewText,
-    onPeerReady
+    onPeerReady,
+    onStateUpdate
   } = {}) {
     if (socket) {
       return instance;
@@ -30,6 +32,7 @@ class DiscoveryService {
     onConnect && ( this.onConnect = onConnect );
     onNewText && ( this.onNewText = onNewText );
     onPeerReady && ( this.onPeerReady = onPeerReady );
+    onStateUpdate && ( this.onStateUpdate = onStateUpdate );
 
     const { SOCKET_URL } = constants;
     console.log('Setting up peer');
@@ -42,6 +45,8 @@ class DiscoveryService {
       console.log('Connection successful');
       this.onConnect();
       this._isLoading = false;
+
+      this.broadcastStateUpdate();
     });
 
     socket.on('disconnect', () => {
@@ -86,6 +91,8 @@ class DiscoveryService {
 
       // Also update the current text value stored in DiscoverService's state
       this.text = data.text;
+
+      this.broadcastStateUpdate();
     });
 
     socket.on('CLIENT_JOINED', (data) => {
@@ -127,6 +134,14 @@ class DiscoveryService {
 
     socket.on('REQUEST_TEXT', (fn) => {
       fn({ text: this.text });
+    });
+  }
+
+  broadcastStateUpdate() {
+    console.log('Broadcasting state update');
+    this.onStateUpdate({
+      loading: this._isLoading,
+      text: this.text
     });
   }
 
