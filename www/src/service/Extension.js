@@ -63,6 +63,21 @@ export async function getValueFromChromeStorage (key) {
   });
 }
 
+export function connectBackgroundWithScratchpad(onConnect, onDisconnect) {
+  const listener = (port) => {
+    console.log('Connected to ', port.name);
+    onConnect(port);
+
+    port.onDisconnect.addListener(( port) => {
+      console.log('Disconnected', port.name);
+      onDisconnect();
+    });
+  };
+
+  chrome.runtime.onConnect.removeListener(listener);
+  chrome.runtime.onConnect.addListener(listener);
+}
+
 export function connectScratchpadStateWithBackground ({ setLoading, setText }) {
   // create a runtime connection port to communicate with background.js script
   const port = chrome.runtime.connect({ name: 'stateUpdates' });
