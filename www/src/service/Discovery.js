@@ -81,7 +81,7 @@ class DiscoveryService {
 
     socket.on('NEW_TEXT', (data) => {
       console.log('NEW_TEXT recvd', data);
-      if (!data || !data.text) {
+      if (!data || data.text === undefined || data.text === null) {
         console.log("Recvd malformed data");
         return;
       }
