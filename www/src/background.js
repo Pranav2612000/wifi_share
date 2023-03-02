@@ -196,6 +196,23 @@ const _startApp = async () => {
   // start the discovery service
   initializeDiscoveryService();
   connectBackgroundWithScratchpad(onBroadcastingChannelConnect, onBroadcastingChannelDisconnect);
+
+  function listener (message, sender, sendResponse) {
+    console.log('Listener running', message, sender, sendResponse);
+    (async () => {
+      await (new Promise((resolve) => {
+        setTimeout(() => {
+          sendResponse({ status: 'SUCCESS' });
+          resolve(true);
+        }, 2000);
+      }));
+      console.log('Listener ran successfully');
+      sendResponse({ status: 'SUCCESS' });
+    })();
+    return true;
+  }
+  chrome.runtime.onMessage.removeListener(listener);
+  chrome.runtime.onMessage.addListener(listener);
 }
 
 initializeApp();

@@ -7,7 +7,8 @@ import debounce from "../service/Debounce.js";
 import {
   isExtension,
   getValueFromChromeStorage,
-  connectScratchpadStateWithBackground
+  connectScratchpadStateWithBackground,
+  sendTextUpdateToBackground
 } from '../service/Extension';
 
 const getStatusElement = (isUpdating) => {
@@ -80,9 +81,15 @@ const Scratchpad = () => {
 
     setUpdating(true);
 
-    const peer = new DiscoveryService();
+    if (isExtension) {
+      const response = await sendTextUpdateToBackground(e.target.value);
+      console.log({ response });
+    } else {
+      const peer = new DiscoveryService();
 
-    await peer.sendUpdates(e.target.value);
+      await peer.sendUpdates(e.target.value);
+    }
+
     setUpdating(false);
   };
 
