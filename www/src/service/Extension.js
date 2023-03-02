@@ -96,3 +96,15 @@ export function connectScratchpadStateWithBackground ({ setLoading, setText }) {
     }
   }
 }
+
+export async function sendTextUpdateToBackground(text) {
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage({
+      type: 'TEXT_UPDATE',
+      data: { text: text }
+    }, (response) => {
+      console.log('Response from text update', response);
+      resolve(response);
+    })
+  });
+}
