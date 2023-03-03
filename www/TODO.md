@@ -1,7 +1,7 @@
 ## TODO
 
 - Ensure nothing has broken on webversion of the app [ DONE ]
-- Interface for switching on/off - try out type radio context menu or maintain state and only show one of ON/OFF menu item
+- Interface for switching on/off - try out type radio context menu or maintain state and only show one of ON/OFF menu item [ DONE ]
     Going ahead with normal buttons for now. OFF shown if the app is in ON state and ON shown if the app is in OFF state. [ DONE ]
     Use chrome storage for storing app state ( ON / OFF ) [ DONE ]
     Ensure proper state updates when the button is clicked [ DONE ]
@@ -12,13 +12,16 @@
 - Stop the discovery service when the app is toggled OFF [ DONE ]
 - When in ON state, new connections should not be started when the popup is opened [ DONE ]
 - Slowdown 'Autosaving...' for better UX effect
-- Set up communication pipelines between Discovery Service & Popup using background.js
+- Set up communication pipelines between Discovery Service & Popup using background.js [ DONE ]
 
 ## Long lived Connections
 - Multiple connections opened up on background.js [ DONE ]
 - Messages being sent by an older disconnected port [ DONE ]
 - Refactoring Scratchpad [ DONE ]
-- Refactoring background.js
+- Refactoring background.js [ DONE ]
 
-- [BUG] Second client stuck in loading state if master's text was '' ( empty string )
+- [BUG] Second client stuck in loading state if master's text was '' ( empty string ) [ DONE ]
 
+- Clear button should clear the scratchpad
+- Handle error states while sending text updates
+- Show error and disable editing if could not connect to socket server backend
