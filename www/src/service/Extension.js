@@ -112,10 +112,19 @@ export async function sendTextUpdateToBackground(text) {
 export function listenForTextUpdatesFromPopup({ onNewText } = {}) {
   function listener (message, sender, sendResponse) {
     console.log('Text update received from popup', message);
+
+    if (!message || message.type != 'TEXT_UPDATE') {
+      sendResponse({
+        status: 'FAILURE',
+        reason: 'INVALID EVENT TYPE'
+      });
+      return true;
+    }
+
     (async () => {
       try {
-        if (onNewText) {
-          await onNewText(message);
+        if (onNewText && message.data && message.data.text) {
+          await onNewText(message.data.text);
         }
         sendResponse({ status: 'SUCCESS' });
       } catch (err) {
