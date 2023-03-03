@@ -108,3 +108,24 @@ export async function sendTextUpdateToBackground(text) {
     })
   });
 }
+
+export function listenForTextUpdatesFromPopup({ onNewText } = {}) {
+  function listener (message, sender, sendResponse) {
+    console.log('Text update received from popup', message);
+    (async () => {
+      try {
+        if (onNewText) {
+          await onNewText(message);
+        }
+        sendResponse({ status: 'SUCCESS' });
+      } catch (err) {
+        console.log(err);
+        sendResponse({ status: 'FAILURE' });
+      }
+    })();
+    return true;
+  }
+
+  chrome.runtime.onMessage.removeListener(listener);
+  chrome.runtime.onMessage.addListener(listener);
+}
