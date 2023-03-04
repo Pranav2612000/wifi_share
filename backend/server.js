@@ -86,7 +86,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('UPDATE_TEXT', async (data, callback) => {
-    if(!data || !data.text) {
+    if(!data || data.text === null || data.text === undefined) {
       console.log("Recvd malformed data. Doing nothing");
       return;
     }
