@@ -93,6 +93,11 @@ const Scratchpad = () => {
     setUpdating(false);
   };
 
+  const onTextClear = () => {
+    setText('');
+    debouncedOnTextUpdate('');
+  }
+
   if (isExtension && !enabled) {
     return (
       <p className='text-md' data-enabled={enabled}> Please switch ON the app to start sharing text </p>
@@ -119,7 +124,7 @@ const Scratchpad = () => {
             {getStatusElement(updating)}
             <div>
               <button className='text-sm success'>Save</button>
-              <button className='text-sm failure'>Clear</button>
+              <button className='text-sm failure' onClick={onTextClear}>Clear</button>
             </div>
           </section>
         </>
