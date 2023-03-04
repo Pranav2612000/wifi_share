@@ -73,21 +73,21 @@ const Scratchpad = () => {
     }
   }, []);
 
-  const debouncedOnTextUpdate = useCallback(debounce((e) => {
-    onTextUpdate(e);
+  const debouncedOnTextUpdate = useCallback(debounce((text) => {
+    onTextUpdate(text);
   }), []);
 
-  const onTextUpdate = async (e) => {
+  const onTextUpdate = async (text) => {
 
     setUpdating(true);
 
     if (isExtension) {
-      const response = await sendTextUpdateToBackground(e.target.value);
+      const response = await sendTextUpdateToBackground(text);
       console.log({ response });
     } else {
       const peer = new DiscoveryService();
 
-      await peer.sendUpdates(e.target.value);
+      await peer.sendUpdates(text);
     }
 
     setUpdating(false);
@@ -110,7 +110,7 @@ const Scratchpad = () => {
               className='scratchpad-input text-md'
               placeholder='Paste something here'
               value={text}
-              onKeyUp={(e) => debouncedOnTextUpdate(e)}
+              onKeyUp={(e) => debouncedOnTextUpdate(e.target.value)}
               onChange={(e) => setText(e.target.value)}
             >
             </textarea>
