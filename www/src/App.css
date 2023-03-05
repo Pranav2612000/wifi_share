@@ -52,6 +52,10 @@
   color: var(--gray-08);
 }
 
+.status-label[data-status=saved] {
+  color: var(--green-04);
+}
+
 .controls-container {
   display: flex;
   justify-content: space-between;

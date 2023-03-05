@@ -10,11 +10,20 @@ import {
   sendTextUpdateToBackground
 } from '../service/Extension';
 import { wait } from '../service/Utils';
+import constants from '../config/constants';
 
-const getStatusElement = (isUpdating) => {
-  if (isUpdating) {
+const { SCRATCHPAD_STATUS } = constants;
+
+const getStatusElement = (status) => {
+  if (status === SCRATCHPAD_STATUS.SAVING) {
     return (
       <p className='text-sm status-label' data-status='default'>Autosaving...</p>
+    )
+  }
+
+  if (status === SCRATCHPAD_STATUS.SAVED) {
+    return (
+      <p className='text-sm status-label' data-status='saved'>Saved</p>
     )
   }
   return (
@@ -25,8 +34,8 @@ const getStatusElement = (isUpdating) => {
 const Scratchpad = () => {
   const [ enabled, setIsEnabled ] = useState(true);
   const [ loading, setLoading ] = useState(true);
-  const [ updating, setUpdating ] = useState(false);
   const [ text, setText ] = useState('');
+  const [ status, setStatus ] = useState(SCRATCHPAD_STATUS.IDLE);
 
   const setExtensionState = async () => {
     const enabled = await getValueFromChromeStorage('enabled');
@@ -79,7 +88,7 @@ const Scratchpad = () => {
 
   const onTextUpdate = async (text) => {
 
-    setUpdating(true);
+    setStatus(SCRATCHPAD_STATUS.SAVING);
 
     if (isExtension) {
       const response = await sendTextUpdateToBackground(text);
@@ -94,7 +103,7 @@ const Scratchpad = () => {
       await Promise.all([peer.sendUpdates(text), wait(1500)]);
     }
 
-    setUpdating(false);
+    setStatus(SCRATCHPAD_STATUS.IDLE);
   };
 
   const onTextClear = () => {
@@ -125,7 +134,7 @@ const Scratchpad = () => {
             </textarea>
           </section>
           <section className='controls-container'>
-            {getStatusElement(updating)}
+            {getStatusElement(status)}
             <div>
               <button className='text-sm success' onClick={() => onTextUpdate(text)}>Save</button>
               <button className='text-sm failure' onClick={onTextClear}>Clear</button>
