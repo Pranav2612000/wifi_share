@@ -63,6 +63,9 @@ const Scratchpad = () => {
       onConnect: () => {
         return;
       },
+      onDisconnect: () => {
+        setLoading(true);
+      },
       onPeerReady: () => {
         setLoading(false);
       },

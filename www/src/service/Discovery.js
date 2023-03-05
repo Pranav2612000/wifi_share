@@ -13,12 +13,14 @@ class DiscoveryService {
   text = '';
 
   onConnect = () => { return null; };
+  onDisconnect = () => { return null; };
   onNewText = () => { return null; };
   onPeerReady = () => { return null; };
   onStateUpdate = () => { return null; };
 
   constructor({
     onConnect,
+    onDisconnect,
     onNewText,
     onPeerReady,
     onStateUpdate
@@ -30,6 +32,7 @@ class DiscoveryService {
     instance = this;
 
     onConnect && ( this.onConnect = onConnect );
+    onDisconnect && ( this.onDisconnect = onDisconnect );
     onNewText && ( this.onNewText = onNewText );
     onPeerReady && ( this.onPeerReady = onPeerReady );
     onStateUpdate && ( this.onStateUpdate = onStateUpdate );
@@ -51,6 +54,9 @@ class DiscoveryService {
 
     socket.on('disconnect', () => {
       console.log('Connection disconnected');
+
+      this._isLoading = true;
+      this.onDisconnect();
     });
 
     socket.on('connect_error', (err) => {
