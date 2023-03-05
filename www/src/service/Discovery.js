@@ -57,6 +57,7 @@ class DiscoveryService {
 
       this._isLoading = true;
       this.onDisconnect();
+      this.broadcastStateUpdate();
     });
 
     socket.on('connect_error', (err) => {
