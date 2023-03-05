@@ -1,4 +1,3 @@
-/* global chrome */
 import { useCallback, useEffect, useState } from "react";
 
 import Loader from './Loader.jsx';
@@ -10,6 +9,7 @@ import {
   connectScratchpadStateWithBackground,
   sendTextUpdateToBackground
 } from '../service/Extension';
+import { wait } from '../service/Utils';
 
 const getStatusElement = (isUpdating) => {
   if (isUpdating) {
@@ -87,7 +87,11 @@ const Scratchpad = () => {
     } else {
       const peer = new DiscoveryService();
 
-      await peer.sendUpdates(text);
+      // Sometimes the update completes almost immediately and the 'Autosaving...' text
+      // is shown for a very short duration. To give the impression that we are doing something
+      // behind the screens we are waiting for 1500ms before hiding the message. The following code
+      // is a hacky way which allows us to do this
+      await Promise.all([peer.sendUpdates(text), wait(1500)]);
     }
 
     setUpdating(false);
