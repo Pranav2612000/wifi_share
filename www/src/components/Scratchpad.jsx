@@ -127,7 +127,7 @@ const Scratchpad = () => {
           <section className='controls-container'>
             {getStatusElement(updating)}
             <div>
-              <button className='text-sm success'>Save</button>
+              <button className='text-sm success' onClick={() => onTextUpdate(text)}>Save</button>
               <button className='text-sm failure' onClick={onTextClear}>Clear</button>
             </div>
           </section>
