@@ -103,7 +103,11 @@ const Scratchpad = () => {
       await Promise.all([peer.sendUpdates(text), wait(1500)]);
     }
 
-    setStatus(SCRATCHPAD_STATUS.IDLE);
+    setStatus(SCRATCHPAD_STATUS.SAVED);
+
+    setTimeout(() => {
+      setStatus(SCRATCHPAD_STATUS.IDLE);
+    }, 3000);
   };
 
   const onTextClear = () => {
