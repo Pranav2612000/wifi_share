@@ -10,21 +10,18 @@ const onClientConnected = async (io, socket) => {
 
   // get the current number of clients in the room and return
   // this data back to the client
-  const numberOfClients = io.sockets.adapter.rooms.get(address)?.size ?? 0;
   const clientSockets = await io.in(address).fetchSockets();
-  const clientIps = clientSockets.map((socket) => {
-    return getIpAddress(socket);
-  });
+  const clientIps = clientSockets.map((clientSocket) => getIpAddress(clientSocket));
 
   // Kept here for testing. To be deleted later.
   console.log({ clientIps });
 
   socket.emit('CONNECTION_SUCCESSFUL', {
-    clients: clientIps
+    clients: clientIps,
   });
 
   socket.to(address).emit('CLIENT_JOINED', {
-    address: address
+    address,
   });
 };
 

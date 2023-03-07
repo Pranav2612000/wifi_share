@@ -1,6 +1,6 @@
 const express = require('express');
 const http = require('http');
-const { Server } = require("socket.io");
+const { Server } = require('socket.io');
 
 const onClientConnected = require('./helpers/onClientConnected');
 const getIpAddress = require('./helpers/getIpAddress');
@@ -19,8 +19,8 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: true
-  }
+    origin: true,
+  },
 });
 
 io.on('connection', (socket) => {
@@ -31,13 +31,12 @@ io.on('connection', (socket) => {
     console.log('user disconnected', address);
 
     socket.to(address).emit('CLIENT_LEFT', {
-      address: address
+      address,
     });
   });
 
   // Triggered when some client is asking for text
   socket.on('REQUEST_TEXT', async (data, client) => {
-
     // Kept here for testing. To be deleted later.
     console.log('Client ', client, 'called REQUEST_TEXT with data', data);
 
@@ -47,19 +46,20 @@ io.on('connection', (socket) => {
     // If no other sockets exist return empty text back
     if (!Array.isArray(clientSockets) || clientSockets.length <= 1) {
       socket.emit('NEW_TEXT', {
-        text: ""
+        text: '',
       });
       return;
     }
 
     // Otherwise fetch the latest text from the first client and use that
-    io.to(clientSockets[0].id).timeout(5000).emit('REQUEST_TEXT', function (err, resp) {
-      console.log('Response from a client', resp);
+    io.to(clientSockets[0].id)
+      .timeout(5000)
+      .emit('REQUEST_TEXT', (err, [resp]) => {
+        console.log('Response from a client', resp);
 
-      resp = resp[0];
-      console.log('Parsed response', resp);
+        console.log('Parsed response', resp);
 
-      /*
+        /*
       // Since the data we receive is stringified, we first need to parse it
       try {
         resp = JSON.parse(resp[0]);
@@ -68,32 +68,32 @@ io.on('connection', (socket) => {
       }
 
       */
-      console.log('text', resp.text);
+        console.log('text', resp.text);
 
-      // If there's an error in getting data we send back empty string
-      if(err || !resp || resp.text === null || resp.text === undefined) {
-        console.log("Recvd malformed data");
+        // If there's an error in getting data we send back empty string
+        if (err || !resp || resp.text === null || resp.text === undefined) {
+          console.log('Recvd malformed data');
+          socket.emit('NEW_TEXT', {
+            text: '',
+          });
+          return;
+        }
+
         socket.emit('NEW_TEXT', {
-          text: ""
+          text: resp.text,
         });
-        return;
-      }
-
-      socket.emit('NEW_TEXT', {
-        text: resp.text
       });
-    });
   });
 
   socket.on('UPDATE_TEXT', async (data, callback) => {
-    if(!data || data.text === null || data.text === undefined) {
-      console.log("Recvd malformed data. Doing nothing");
+    if (!data || data.text === null || data.text === undefined) {
+      console.log('Recvd malformed data. Doing nothing');
       return;
     }
 
     const address = getIpAddress(socket);
     socket.to(address).emit('NEW_TEXT', {
-      text: data.text
+      text: data.text,
     });
 
     callback('UPDATE_SUCCESS');
