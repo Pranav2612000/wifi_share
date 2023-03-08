@@ -6,7 +6,7 @@ let instance; // used for singleton pattern
 let socket;
 
 class DiscoveryService {
-  _isLoading = true;
+  _isLoading = false;
 
   _isMaster = false;
 
@@ -41,11 +41,12 @@ class DiscoveryService {
     onPeerReady,
     onStateUpdate,
   } = {}) {
-    if (socket) {
+    if (socket || instance?.isLoading() === true) {
       return instance;
     }
 
     instance = this;
+    this._isLoading = true;
 
     onConnect && (this.onConnect = onConnect);
     onDisconnect && (this.onDisconnect = onDisconnect);
@@ -165,6 +166,7 @@ class DiscoveryService {
         });
       })
       .catch((err) => {
+        this._isLoading = false;
         console.log(err);
       });
   }
