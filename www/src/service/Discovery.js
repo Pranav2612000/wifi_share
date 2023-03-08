@@ -1,6 +1,5 @@
-import constants from '../config/constants';
-
 import { io } from "socket.io-client";
+import constants from "../config/constants";
 
 let instance; // used for singleton pattern
 
@@ -8,22 +7,39 @@ let socket;
 
 class DiscoveryService {
   _isLoading = true;
-  _isMaster = false;
-  onlinePeers = [];
-  text = '';
 
-  onConnect = () => { return null; };
-  onDisconnect = () => { return null; };
-  onNewText = () => { return null; };
-  onPeerReady = () => { return null; };
-  onStateUpdate = () => { return null; };
+  _isMaster = false;
+
+  onlinePeers = [];
+
+  text = "";
+
+  onConnect = () => {
+    return null;
+  };
+
+  onDisconnect = () => {
+    return null;
+  };
+
+  onNewText = () => {
+    return null;
+  };
+
+  onPeerReady = () => {
+    return null;
+  };
+
+  onStateUpdate = () => {
+    return null;
+  };
 
   constructor({
     onConnect,
     onDisconnect,
     onNewText,
     onPeerReady,
-    onStateUpdate
+    onStateUpdate,
   } = {}) {
     if (socket) {
       return instance;
@@ -31,40 +47,40 @@ class DiscoveryService {
 
     instance = this;
 
-    onConnect && ( this.onConnect = onConnect );
-    onDisconnect && ( this.onDisconnect = onDisconnect );
-    onNewText && ( this.onNewText = onNewText );
-    onPeerReady && ( this.onPeerReady = onPeerReady );
-    onStateUpdate && ( this.onStateUpdate = onStateUpdate );
+    onConnect && (this.onConnect = onConnect);
+    onDisconnect && (this.onDisconnect = onDisconnect);
+    onNewText && (this.onNewText = onNewText);
+    onPeerReady && (this.onPeerReady = onPeerReady);
+    onStateUpdate && (this.onStateUpdate = onStateUpdate);
 
     const { SOCKET_URL } = constants;
-    console.log('Setting up peer');
+    console.log("Setting up peer");
 
     socket = io(SOCKET_URL, {
-      transports: ['websocket']
+      transports: ["websocket"],
     });
 
-    socket.on('connect', () => {
-      console.log('Connection successful');
+    socket.on("connect", () => {
+      console.log("Connection successful");
       this.onConnect();
       this._isLoading = false;
 
       this.broadcastStateUpdate();
     });
 
-    socket.on('disconnect', () => {
-      console.log('Connection disconnected');
+    socket.on("disconnect", () => {
+      console.log("Connection disconnected");
 
       this._isLoading = true;
       this.onDisconnect();
       this.broadcastStateUpdate();
     });
 
-    socket.on('connect_error', (err) => {
-      console.log('error connecting to socket', err);
+    socket.on("connect_error", (err) => {
+      console.log("error connecting to socket", err);
     });
 
-    socket.on('CONNECTION_SUCCESSFUL', (data) => {
+    socket.on("CONNECTION_SUCCESSFUL", (data) => {
       if (!data || !Array.isArray(data.clients)) {
         console.log("Recvd malformed data");
         return;
@@ -83,11 +99,11 @@ class DiscoveryService {
       console.log("Connected Clients: ", this.onlinePeers);
 
       // Otherwise we ask the server to send us the latest text
-      socket.emit('REQUEST_TEXT');
+      socket.emit("REQUEST_TEXT");
     });
 
-    socket.on('NEW_TEXT', (data) => {
-      console.log('NEW_TEXT recvd', data);
+    socket.on("NEW_TEXT", (data) => {
+      console.log("NEW_TEXT recvd", data);
       if (!data || data.text === undefined || data.text === null) {
         console.log("Recvd malformed data");
         return;
@@ -102,53 +118,53 @@ class DiscoveryService {
       this.broadcastStateUpdate();
     });
 
-    socket.on('CLIENT_JOINED', (data) => {
-      console.log('New client joined', data);
+    socket.on("CLIENT_JOINED", (data) => {
+      console.log("New client joined", data);
       if (!data || !data.address) {
-        console.log('Malformed CLIENT_LEFT data');
+        console.log("Malformed CLIENT_LEFT data");
         return;
       }
 
       if (!this.onlinePeers || !Array.isArray(this.onlinePeers)) {
-        this.onlinePeers = [ data.address ];
+        this.onlinePeers = [data.address];
         return;
       }
 
       this.onlinePeers.push(data.address);
     });
 
-    socket.on('CLIENT_LEFT', (data) => {
-      console.log('A client left', data);
+    socket.on("CLIENT_LEFT", (data) => {
+      console.log("A client left", data);
       if (!data || !data.address) {
-        console.log('Malformed CLIENT_LEFT data');
+        console.log("Malformed CLIENT_LEFT data");
         return;
       }
 
       if (!this.onlinePeers || !Array.isArray(this.onlinePeers)) {
-        console.log('No peers online');
+        console.log("No peers online");
         return;
       }
 
       const clientIdx = this.onlinePeers.indexOf(data.address);
 
       if (clientIdx <= -1) {
-        console.log('Client not found');
+        console.log("Client not found");
         return;
       }
 
       this.onlinePeers.splice(clientIdx, 1);
     });
 
-    socket.on('REQUEST_TEXT', (fn) => {
+    socket.on("REQUEST_TEXT", (fn) => {
       fn({ text: this.text });
     });
   }
 
   broadcastStateUpdate() {
-    console.log('Broadcasting state update');
+    console.log("Broadcasting state update");
     this.onStateUpdate({
       loading: this._isLoading,
-      text: this.text
+      text: this.text,
     });
   }
 
@@ -156,40 +172,38 @@ class DiscoveryService {
     return this._isLoading;
   }
 
-  setup() {
-  }
+  setup() {}
 
   find() {
-    console.log('Looking for peers...');
+    console.log("Looking for peers...");
   }
 
   async sendUpdates(text) {
-    console.log('Sending updated text to peers', text, socket);
+    console.log("Sending updated text to peers", text, socket);
     return new Promise((resolve, reject) => {
-      socket.emit('UPDATE_TEXT', {
-        text: text
-      }, (resp) => {
-        // Also store the latest updated text to serve to new peers which may join
-        this.text = text;
+      socket.emit(
+        "UPDATE_TEXT",
+        {
+          text,
+        },
+        (resp) => {
+          // Also store the latest updated text to serve to new peers which may join
+          this.text = text;
 
-        resolve(true);
-      });
+          resolve(true);
+        }
+      );
     });
-
   }
 
   getText() {
     return this.text;
   }
 
-  updateCallbacks({
-    onConnect,
-    onNewText,
-    onPeerReady
-  } = {}) {
-    onConnect && ( this.onConnect = onConnect );
-    onNewText && ( this.onNewText = onNewText );
-    onPeerReady && ( this.onPeerReady = onPeerReady );
+  updateCallbacks({ onConnect, onNewText, onPeerReady } = {}) {
+    onConnect && (this.onConnect = onConnect);
+    onNewText && (this.onNewText = onNewText);
+    onPeerReady && (this.onPeerReady = onPeerReady);
   }
 
   kill() {
@@ -198,7 +212,7 @@ class DiscoveryService {
       return;
     }
 
-    console.log('Disconnecting...');
+    console.log("Disconnecting...");
     socket.disconnect();
     socket = null;
   }

@@ -1,49 +1,54 @@
 import { useCallback, useEffect, useState } from "react";
 
-import Loader from './Loader.jsx';
+import Loader from "./Loader.jsx";
 import DiscoveryService from "../service/Discovery";
-import debounce from "../service/Debounce.js";
+import debounce from "../service/Debounce";
 import {
   isExtension,
   getValueFromChromeStorage,
   connectScratchpadStateWithBackground,
-  sendTextUpdateToBackground
-} from '../service/Extension';
-import { wait } from '../service/Utils';
-import constants from '../config/constants';
+  sendTextUpdateToBackground,
+} from "../service/Extension";
+import { wait } from "../service/Utils";
+import constants from "../config/constants";
 
 const { SCRATCHPAD_STATUS } = constants;
 
 const getStatusElement = (status) => {
   if (status === SCRATCHPAD_STATUS.SAVING) {
     return (
-      <p className='text-sm status-label' data-status='default'>Autosaving...</p>
-    )
+      <p className="text-sm status-label" data-status="default">
+        Autosaving...
+      </p>
+    );
   }
 
   if (status === SCRATCHPAD_STATUS.SAVED) {
     return (
-      <p className='text-sm status-label' data-status='saved'>Saved</p>
-    )
+      <p className="text-sm status-label" data-status="saved">
+        Saved
+      </p>
+    );
   }
   return (
-    <p className='text-sm status-label' data-status='default'>Paste your text here</p>
-  )
+    <p className="text-sm status-label" data-status="default">
+      Paste your text here
+    </p>
+  );
 };
 
-const Scratchpad = () => {
-  const [ enabled, setIsEnabled ] = useState(true);
-  const [ loading, setLoading ] = useState(true);
-  const [ text, setText ] = useState('');
-  const [ status, setStatus ] = useState(SCRATCHPAD_STATUS.IDLE);
+function Scratchpad() {
+  const [enabled, setIsEnabled] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [text, setText] = useState("");
+  const [status, setStatus] = useState(SCRATCHPAD_STATUS.IDLE);
 
   const setExtensionState = async () => {
-    const enabled = await getValueFromChromeStorage('enabled');
+    const enabled = await getValueFromChromeStorage("enabled");
     setIsEnabled(enabled);
   };
 
   useEffect(() => {
-
     // If we are running this from an extension, we've already completed our connection
     // in our background script and so don't need to initialize DiscoveryService here
     if (isExtension) {
@@ -51,7 +56,7 @@ const Scratchpad = () => {
 
       const { closeConnection } = connectScratchpadStateWithBackground({
         setLoading,
-        setText
+        setText,
       });
 
       return function cleanup() {
@@ -60,9 +65,7 @@ const Scratchpad = () => {
     }
 
     const peer = new DiscoveryService({
-      onConnect: () => {
-        return;
-      },
+      onConnect: () => {},
       onDisconnect: () => {
         setLoading(true);
       },
@@ -71,7 +74,7 @@ const Scratchpad = () => {
       },
       onNewText: (newText) => {
         setText(newText);
-      }
+      },
     });
 
     return function cleanup() {
@@ -82,15 +85,17 @@ const Scratchpad = () => {
       }
 
       peer.kill();
-    }
+    };
   }, []);
 
-  const debouncedOnTextUpdate = useCallback(debounce((text) => {
-    onTextUpdate(text);
-  }), []);
+  const debouncedOnTextUpdate = useCallback(
+    debounce((text) => {
+      onTextUpdate(text);
+    }),
+    []
+  );
 
   const onTextUpdate = async (text) => {
-
     setStatus(SCRATCHPAD_STATUS.SAVING);
 
     let updateTextPromise;
@@ -115,42 +120,51 @@ const Scratchpad = () => {
   };
 
   const onTextClear = () => {
-    setText('');
-    debouncedOnTextUpdate('');
-  }
+    setText("");
+    debouncedOnTextUpdate("");
+  };
 
   if (isExtension && !enabled) {
     return (
-      <p className='text-md' data-enabled={enabled}> Please switch ON the app to start sharing text </p>
+      <p className="text-md" data-enabled={enabled}>
+        {" "}
+        Please switch ON the app to start sharing text{" "}
+      </p>
     );
   }
 
   return (
-    <main className='scratchpad-container'>
+    <main className="scratchpad-container">
       {loading ? (
-        <Loader/>
+        <Loader />
       ) : (
         <>
-          <section className='input-container'>
+          <section className="input-container">
             <textarea
-              className='scratchpad-input text-md'
-              placeholder='Paste something here'
+              className="scratchpad-input text-md"
+              placeholder="Paste something here"
               value={text}
               onKeyUp={(e) => debouncedOnTextUpdate(e.target.value)}
               onChange={(e) => setText(e.target.value)}
-            >
-            </textarea>
+            />
           </section>
-          <section className='controls-container'>
+          <section className="controls-container">
             {getStatusElement(status)}
             <div>
-              <button className='text-sm success' onClick={() => onTextUpdate(text)}>Save</button>
-              <button className='text-sm failure' onClick={onTextClear}>Clear</button>
+              <button
+                className="text-sm success"
+                onClick={() => onTextUpdate(text)}
+              >
+                Save
+              </button>
+              <button className="text-sm failure" onClick={onTextClear}>
+                Clear
+              </button>
             </div>
           </section>
         </>
       )}
     </main>
   );
-};
+}
 export default Scratchpad;

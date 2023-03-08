@@ -1,4 +1,4 @@
-/*global chrome*/
+/* global chrome */
 
 import DiscoveryService from "./service/Discovery";
 import {
@@ -9,11 +9,10 @@ import {
   setValueInChromeStorage,
   getValueFromChromeStorage,
   connectBackgroundWithScratchpad,
-  listenForTextUpdatesFromPopup
+  listenForTextUpdatesFromPopup,
 } from "./service/Extension";
 
 let communicationPort;
-
 
 const sendStateToPopup = (message) => {
   // If no communication Port is set up. We don't need to send
@@ -23,97 +22,85 @@ const sendStateToPopup = (message) => {
   }
 
   communicationPort.postMessage({
-    type: 'STATE',
-    data: message
+    type: "STATE",
+    data: message,
   });
-}
+};
 
 const onBroadcastingChannelConnect = (port) => {
   communicationPort = port;
 
   const peer = new DiscoveryService();
   port.postMessage({
-    type: 'STATE',
+    type: "STATE",
     data: {
       loading: peer.isLoading(),
-      text: peer.getText()
-    }
+      text: peer.getText(),
+    },
   });
-}
+};
 
 const onBroadcastingChannelDisconnect = () => {
   communicationPort = null;
-}
+};
 
 const updateText = async (text) => {
   const peer = new DiscoveryService();
   await peer.sendUpdates(text);
-  console.log('Update successful', text);
-}
+  console.log("Update successful", text);
+};
 
 const initializeDiscoveryService = () => {
-  console.log('Starting discovery service in background');
+  console.log("Starting discovery service in background");
   const peer = new DiscoveryService({
-    onConnect: () => {
-      return;
-    },
-    onPeerReady: () => {
-      return;
-    },
-    onNewText: (newText) => {
-      return;
-    },
-    onStateUpdate: sendStateToPopup
+    onConnect: () => {},
+    onPeerReady: () => {},
+    onNewText: (newText) => {},
+    onStateUpdate: sendStateToPopup,
   });
 
   return peer;
-}
+};
 
 const terminateDiscoveryService = () => {
-  console.log('Stopping discovery service');
+  console.log("Stopping discovery service");
 
   // get reference to the connected peer
   const peer = new DiscoveryService({
-    onConnect: () => {
-      return;
-    },
-    onPeerReady: () => {
-      return;
-    },
-    onNewText: (newText) => {
-      return;
-    }
+    onConnect: () => {},
+    onPeerReady: () => {},
+    onNewText: (newText) => {},
   });
 
   // and kill it
   peer.kill();
 
   return true;
-}
+};
 
 const initializeContextMenus = async (isAppEnabled) => {
   await removeAllContextMenus();
   await addContextMenus([
     {
-      title: 'Switch ON',
-      id: 'ON',
+      title: "Switch ON",
+      id: "ON",
       visible: !isAppEnabled,
-      enabled: !isAppEnabled
+      enabled: !isAppEnabled,
     },
     {
-      title: 'Switch OFF',
-      id: 'OFF',
+      title: "Switch OFF",
+      id: "OFF",
       visible: isAppEnabled,
-      enabled: isAppEnabled
-    }
+      enabled: isAppEnabled,
+    },
   ]);
 
   chrome.contextMenus.onClicked.addListener((info, tab) => {
     switch (info.menuItemId) {
-      case 'OFF':
+      case "OFF":
         stopApp();
         break;
-      case 'ON':
+      case "ON":
         startApp();
         break;
       default:
@@ -121,40 +108,39 @@ const initializeContextMenus = async (isAppEnabled) => {
     }
   });
 
-  console.log('Context Menus created successfully');
-}
+  console.log("Context Menus created successfully");
+};
 
 const toggleAppState = async (oldState) => {
-
   // fetch the current app state if it isn't passed
   let enabled = oldState;
   if (enabled === undefined || enabled === null) {
-    enabled = await getValueFromChromeStorage('enabled');
+    enabled = await getValueFromChromeStorage("enabled");
   }
 
-  // toggle the state 
+  // toggle the state
   enabled = !enabled;
 
   // update and redraw the contextMenus
   await Promise.all([
-    updateContextMenu( 'ON', { visible: !enabled, enabled: !enabled }),
-    updateContextMenu( 'OFF', { visible: enabled, enabled: enabled }),
+    updateContextMenu("ON", { visible: !enabled, enabled: !enabled }),
+    updateContextMenu("OFF", { visible: enabled, enabled }),
   ]);
 
   // finally, update the state in chrome storage
-  setValueInChromeStorage('enabled', enabled);
-}
+  setValueInChromeStorage("enabled", enabled);
+};
 
 const initializeApp = async () => {
-  console.log('Starting background service...');
+  console.log("Starting background service...");
 
   // fetch the current app state
-  let enabled = await getValueFromChromeStorage('enabled');
+  let enabled = await getValueFromChromeStorage("enabled");
 
   // if enabled is not defined ( first time after installing the app )
   // we set it to true by default
   if (enabled === undefined) {
-    await setValueInChromeStorage('enabled', true);
+    await setValueInChromeStorage("enabled", true);
     enabled = true;
   }
 
@@ -175,13 +161,13 @@ const stopApp = async () => {
   // toggle the app enabled state
   await toggleAppState(true);
 
-  await updateBadgeText('OFF');
+  await updateBadgeText("OFF");
 
   terminateDiscoveryService();
 
   // actions to perform for stopping the app
-  console.log('App stopped successfully');
-}
+  console.log("App stopped successfully");
+};
 
 const startApp = async () => {
   const enabled = true;
@@ -190,20 +176,23 @@ const startApp = async () => {
   await toggleAppState(false);
 
   // actions to perform for starting the app
-  console.log('App started successfully');
+  console.log("App started successfully");
 
   await _startApp();
-}
+};
 
 const _startApp = async () => {
-  console.log('Starting the app');
+  console.log("Starting the app");
 
-  await updateBadgeText('ON');
+  await updateBadgeText("ON");
 
   // start the discovery service
   initializeDiscoveryService();
-  connectBackgroundWithScratchpad(onBroadcastingChannelConnect, onBroadcastingChannelDisconnect);
+  connectBackgroundWithScratchpad(
+    onBroadcastingChannelConnect,
+    onBroadcastingChannelDisconnect
+  );
   listenForTextUpdatesFromPopup({ onNewText: updateText });
-}
+};
 
 initializeApp();
