@@ -56,7 +56,7 @@ class DiscoveryService {
 
     const { BFF_URL } = constants;
 
-    fetch("https://wifi-share.vercel.app/api/")
+    fetch(BFF_URL)
       .then((res) => res.json())
       .then((res) => {
         const SOCKET_URL = res.socketUrl;
