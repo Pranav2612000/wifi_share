@@ -17,6 +17,10 @@ app.get('/', (req, res) => {
   res.send({ status: 200 });
 });
 
+app.get('/api', (req, res) => {
+  res.send({ socketUrl: 'http://localhost:5000' });
+});
+
 const server = http.createServer(app);
 
 const io = new Server(server, {
