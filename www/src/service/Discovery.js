@@ -77,7 +77,6 @@ class DiscoveryService {
         socket.on("disconnect", () => {
           console.log("Connection disconnected");
 
-          this._isLoading = true;
           this.onDisconnect();
           this.broadcastStateUpdate();
         });
