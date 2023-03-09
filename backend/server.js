@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
 
@@ -8,6 +9,7 @@ const getIpAddress = require('./helpers/getIpAddress');
 const port = process.env.PORT || 5000;
 
 const app = express();
+app.use(cors());
 
 app.set('trust proxy', true);
 
