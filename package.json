@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "install": "cd backend && npm i && cd ../www && npm i",
     "dev": "COLOR=1 nodemon backend/server.js & cd www && npm start | cat ",
-    "dev-extension": "cd www && npm run build-extension && cd ../backend && nodemon server.js"
+    "dev-extension": "cd www && npm run build-extension && cd ../backend && nodemon server.js",
+    "build-www": "cd www/ && npm run build"
   },
   "repository": {
     "type": "git",

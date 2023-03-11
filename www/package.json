@@ -17,7 +17,7 @@
   "scripts": {
     "start": "DISABLE_ESLINT_PLUGIN=true react-scripts start",
     "start-extension": "REACT_APP_TYPE=extension react-scripts start",
-    "build": "INLINE_RUNTIME_CHUNK=false craco build",
+    "build": "DISABLE_ESLINT_PLUGIN=true INLINE_RUNTIME_CHUNK=false craco build",
     "build-extension": "DISABLE_ESLINT_PLUGIN=true INLINE_RUNTIME_CHUNK=false REACT_APP_TYPE=extension craco build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
