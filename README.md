@@ -29,8 +29,21 @@ Create a fork and clone it. Run `npm install` to install the required dependenci
 To start the website in development mode, run `npm run dev`
 To develop the extension, run `npm run dev-extension`. This will generate the extension build in `www/build` folder load it into chrome to test out the extension.
 
+## Designs
+https://www.figma.com/file/igzN9pSE1sSqZDUyEbdBEf/Wifi-Share
+
 ## Maintainer
 - Pranav Joglekar
 
 ## License
 This project is licensed under the terms of the MIT open source license. Please refer to LICENSE.md for the full terms.
+
+## Built With
+- Socket IO
+- [Chrome Extensions](https://developer.chrome.com/docs/extensions/)
+- React
+- Express
+- Railway
+- Vercel
+- Firebase Hosting
+
