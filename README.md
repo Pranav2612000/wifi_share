@@ -1,13 +1,13 @@
 # Wifi share
 
 <p align="center">
-  <img width="128" height="128" src="https://raw.githubusercontent.com/Pranav2612000/wifi_share/main/www/public/logoStoreIcon.png">
+  <img alt="Wifi Share's Logo" width="128" height="128" src="https://raw.githubusercontent.com/Pranav2612000/wifi_share/main/www/public/logoStoreIcon.png">
 </p>
 
 Want to share a short piece of snippet to another device on the network without needing to open email, whatsapp or any other third party tool? With Wifishare, you can. No need to login into or install any 3rd party software.Just go to [Wifi share](https://quick-wifi-share.web.app/) or install the extension and you're done.
 
 ## Screenshots
-![Wifi share's Screenshot 1](https://raw.githubusercontent.com/Pranav2612000/wifi_share/main/www/public/screenshot1.png)
+<img alt="Wifi Share's Screenshot 1" width="350" height="500" src="https://raw.githubusercontent.com/Pranav2612000/wifi_share/main/www/public/screenshot1.png">
 
 ## Usage
 - Install the extension from the Chrome Extension Store or go to https://quick-wifi-share.web.app/
