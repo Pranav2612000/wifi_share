@@ -2,6 +2,7 @@ module.exports = {
   webpack: {
     configure: (webpackConfig, { env, paths }) => {
       // update the HTMLWebpackPlugin to only add main chunk to index.html
+      // eslint-disable-next-line no-param-reassign
       webpackConfig.plugins[0].userOptions.chunks = ["main"];
 
       return {

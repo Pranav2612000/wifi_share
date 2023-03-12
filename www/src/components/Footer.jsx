@@ -1,6 +1,7 @@
-import metadata from '../../package.json';
+import React from "react";
+import metadata from "../../package.json";
 
-const Footer = () => {
+function Footer() {
   const { version } = metadata;
   return (
     <footer className="text-xs">
