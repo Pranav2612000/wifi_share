@@ -12,7 +12,14 @@ module.exports = {
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
+    ecmaFeatures: { jsx: true },
   },
   plugins: ["react"],
-  rules: {},
+  globals: { test: true, expect: true },
+  rules: {
+    "no-underscore-dangle": "off",
+    "no-new": "off",
+    "no-unused-expressions": ["error", { allowShortCircuit: true }],
+    "class-methods-use-this": ["error", { enforceForClassFields: false }],
+  },
 };
