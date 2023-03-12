@@ -65,15 +65,8 @@ const initializeDiscoveryService = () => {
 const terminateDiscoveryService = () => {
   console.log("Stopping discovery service");
 
-  // get reference to the connected peer
-  const peer = new DiscoveryService({
-    onConnect: () => {},
-    onPeerReady: () => {},
-    onNewText: () => {},
-  });
-
-  // and kill it
-  peer.kill();
+  // kill the Discovery Service after its job is done
+  DiscoveryService.kill();
 
   return true;
 };

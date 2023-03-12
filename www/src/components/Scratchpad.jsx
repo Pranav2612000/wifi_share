@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-import Loader from "./Loader.jsx";
+import Loader from "./Loader";
 import DiscoveryService from "../service/Discovery";
 import debounce from "../service/Debounce";
 import {
@@ -44,8 +44,8 @@ function Scratchpad() {
   const [status, setStatus] = useState(SCRATCHPAD_STATUS.IDLE);
 
   const setExtensionState = async () => {
-    const enabled = await getValueFromChromeStorage("enabled");
-    setIsEnabled(enabled);
+    const isExtensionEnabled = await getValueFromChromeStorage("enabled");
+    setIsEnabled(isExtensionEnabled);
   };
 
   useEffect(() => {
@@ -64,7 +64,7 @@ function Scratchpad() {
       };
     }
 
-    const peer = new DiscoveryService({
+    new DiscoveryService({
       onConnect: () => {},
       onDisconnect: () => {
         setLoading(true);
@@ -84,26 +84,19 @@ function Scratchpad() {
         return;
       }
 
-      peer.kill();
+      DiscoveryService.kill();
     };
   }, []);
 
-  const debouncedOnTextUpdate = useCallback(
-    debounce((text) => {
-      onTextUpdate(text);
-    }),
-    []
-  );
-
-  const onTextUpdate = async (text) => {
+  const onTextUpdate = async (newText) => {
     setStatus(SCRATCHPAD_STATUS.SAVING);
 
     let updateTextPromise;
     if (isExtension) {
-      updateTextPromise = sendTextUpdateToBackground(text);
+      updateTextPromise = sendTextUpdateToBackground(newText);
     } else {
       const peer = new DiscoveryService();
-      updateTextPromise = peer.sendUpdates(text);
+      updateTextPromise = peer.sendUpdates(newText);
     }
 
     // Sometimes the update completes almost immediately and the 'Autosaving...' text
@@ -118,6 +111,13 @@ function Scratchpad() {
       setStatus(SCRATCHPAD_STATUS.IDLE);
     }, 3000);
   };
+
+  const debouncedOnTextUpdate = useCallback(
+    debounce((currentText) => {
+      onTextUpdate(currentText);
+    }),
+    []
+  );
 
   const onTextClear = () => {
     setText("");
@@ -152,12 +152,17 @@ function Scratchpad() {
             {getStatusElement(status)}
             <div>
               <button
+                type="button"
                 className="text-sm success"
                 onClick={() => onTextUpdate(text)}
               >
                 Save
               </button>
-              <button className="text-sm failure" onClick={onTextClear}>
+              <button
+                type="button"
+                className="text-sm failure"
+                onClick={onTextClear}
+              >
                 Clear
               </button>
             </div>

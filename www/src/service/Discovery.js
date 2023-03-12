@@ -42,6 +42,7 @@ class DiscoveryService {
     onStateUpdate,
   } = {}) {
     if (socket || instance?.isLoading() === true) {
+      // eslint-disable-next-line no-constructor-return
       return instance;
     }
 
@@ -182,21 +183,21 @@ class DiscoveryService {
     return this._isLoading;
   }
 
-  setup() {}
+  static setup() {}
 
-  find() {
+  static find() {
     console.log("Looking for peers...");
   }
 
   async sendUpdates(text) {
     console.log("Sending updated text to peers", text, socket);
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       socket.emit(
         "UPDATE_TEXT",
         {
           text,
         },
-        (resp) => {
+        () => {
           // Also store the latest updated text to serve to new peers which may join
           this.text = text;
 
@@ -216,7 +217,7 @@ class DiscoveryService {
     onPeerReady && (this.onPeerReady = onPeerReady);
   }
 
-  kill() {
+  static kill() {
     // ignore if the socket has not been initialized
     if (!socket) {
       return;
