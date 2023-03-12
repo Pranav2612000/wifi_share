@@ -4,7 +4,7 @@ export const isExtension = process.env.REACT_APP_TYPE === "extension";
 
 // Creates a async/await usable function to update badge text of the app
 export async function updateBadgeText(text) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     chrome.action.setBadgeText({ text }, () => {
       resolve(true);
     });
@@ -12,7 +12,7 @@ export async function updateBadgeText(text) {
 }
 
 export async function removeAllContextMenus() {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     chrome.contextMenus.removeAll(() => {
       resolve(true);
     });
@@ -22,7 +22,7 @@ export async function removeAllContextMenus() {
 export async function addContextMenus(contextMenus) {
   return Promise.all(
     contextMenus.map((contextMenu) => {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         chrome.contextMenus.create(
           {
             title: contextMenu.title,
@@ -42,7 +42,7 @@ export async function addContextMenus(contextMenus) {
 }
 
 export async function updateContextMenu(id, properties) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     chrome.contextMenus.update(id, properties, () => {
       resolve(true);
     });
@@ -50,7 +50,7 @@ export async function updateContextMenu(id, properties) {
 }
 
 export async function setValueInChromeStorage(key, value) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     chrome.storage.local.set({ [key]: value }).then(() => {
       resolve(true);
     });
@@ -58,7 +58,7 @@ export async function setValueInChromeStorage(key, value) {
 }
 
 export async function getValueFromChromeStorage(key) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     chrome.storage.local.get([key]).then((result) => {
       resolve(result[key]);
     });
@@ -70,8 +70,8 @@ export function connectBackgroundWithScratchpad(onConnect, onDisconnect) {
     console.log("Connected to ", port.name);
     onConnect(port);
 
-    port.onDisconnect.addListener((port) => {
-      console.log("Disconnected", port.name);
+    port.onDisconnect.addListener((currentPort) => {
+      console.log("Disconnected", currentPort.name);
       onDisconnect();
     });
   };
@@ -100,7 +100,7 @@ export function connectScratchpadStateWithBackground({ setLoading, setText }) {
 }
 
 export async function sendTextUpdateToBackground(text) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     chrome.runtime.sendMessage(
       {
         type: "TEXT_UPDATE",
@@ -118,7 +118,7 @@ export function listenForTextUpdatesFromPopup({ onNewText } = {}) {
   function listener(message, sender, sendResponse) {
     console.log("Text update received from popup", message);
 
-    if (!message || message.type != "TEXT_UPDATE") {
+    if (!message || message.type !== "TEXT_UPDATE") {
       sendResponse({
         status: "FAILURE",
         reason: "INVALID EVENT TYPE",

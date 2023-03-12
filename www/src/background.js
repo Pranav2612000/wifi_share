@@ -55,7 +55,7 @@ const initializeDiscoveryService = () => {
   const peer = new DiscoveryService({
     onConnect: () => {},
     onPeerReady: () => {},
-    onNewText: (newText) => {},
+    onNewText: () => {},
     onStateUpdate: sendStateToPopup,
   });
 
@@ -69,7 +69,7 @@ const terminateDiscoveryService = () => {
   const peer = new DiscoveryService({
     onConnect: () => {},
     onPeerReady: () => {},
-    onNewText: (newText) => {},
+    onNewText: () => {},
   });
 
   // and kill it
@@ -78,37 +78,18 @@ const terminateDiscoveryService = () => {
   return true;
 };
 
-const initializeContextMenus = async (isAppEnabled) => {
-  await removeAllContextMenus();
-  await addContextMenus([
-    {
-      title: "Switch ON",
-      id: "ON",
-      visible: !isAppEnabled,
-      enabled: !isAppEnabled,
-    },
-    {
-      title: "Switch OFF",
-      id: "OFF",
-      visible: isAppEnabled,
-      enabled: isAppEnabled,
-    },
-  ]);
+const _startApp = async () => {
+  console.log("Starting the app");
 
-  chrome.contextMenus.onClicked.addListener((info, tab) => {
-    switch (info.menuItemId) {
-      case "OFF":
-        stopApp();
-        break;
-      case "ON":
-        startApp();
-        break;
-      default:
-        break;
-    }
-  });
+  await updateBadgeText("ON");
 
-  console.log("Context Menus created successfully");
+  // start the discovery service
+  initializeDiscoveryService();
+  connectBackgroundWithScratchpad(
+    onBroadcastingChannelConnect,
+    onBroadcastingChannelDisconnect
+  );
+  listenForTextUpdatesFromPopup({ onNewText: updateText });
 };
 
 const toggleAppState = async (oldState) => {
@@ -129,6 +110,61 @@ const toggleAppState = async (oldState) => {
 
   // finally, update the state in chrome storage
   setValueInChromeStorage("enabled", enabled);
+};
+
+const startApp = async () => {
+  // toggle the app enabled state
+  await toggleAppState(false);
+
+  // actions to perform for starting the app
+  console.log("App started successfully");
+
+  await _startApp();
+};
+
+const stopApp = async () => {
+  // toggle the app enabled state
+  await toggleAppState(true);
+
+  await updateBadgeText("OFF");
+
+  terminateDiscoveryService();
+
+  // actions to perform for stopping the app
+  console.log("App stopped successfully");
+};
+
+const initializeContextMenus = async (isAppEnabled) => {
+  await removeAllContextMenus();
+  await addContextMenus([
+    {
+      title: "Switch ON",
+      id: "ON",
+      visible: !isAppEnabled,
+      enabled: !isAppEnabled,
+    },
+    {
+      title: "Switch OFF",
+      id: "OFF",
+      visible: isAppEnabled,
+      enabled: isAppEnabled,
+    },
+  ]);
+
+  chrome.contextMenus.onClicked.addListener((info) => {
+    switch (info.menuItemId) {
+      case "OFF":
+        stopApp();
+        break;
+      case "ON":
+        startApp();
+        break;
+      default:
+        break;
+    }
+  });
+
+  console.log("Context Menus created successfully");
 };
 
 const initializeApp = async () => {
@@ -153,46 +189,6 @@ const initializeApp = async () => {
 
   // otherwise
   await _startApp();
-};
-
-const stopApp = async () => {
-  const enabled = false;
-
-  // toggle the app enabled state
-  await toggleAppState(true);
-
-  await updateBadgeText("OFF");
-
-  terminateDiscoveryService();
-
-  // actions to perform for stopping the app
-  console.log("App stopped successfully");
-};
-
-const startApp = async () => {
-  const enabled = true;
-
-  // toggle the app enabled state
-  await toggleAppState(false);
-
-  // actions to perform for starting the app
-  console.log("App started successfully");
-
-  await _startApp();
-};
-
-const _startApp = async () => {
-  console.log("Starting the app");
-
-  await updateBadgeText("ON");
-
-  // start the discovery service
-  initializeDiscoveryService();
-  connectBackgroundWithScratchpad(
-    onBroadcastingChannelConnect,
-    onBroadcastingChannelDisconnect
-  );
-  listenForTextUpdatesFromPopup({ onNewText: updateText });
 };
 
 initializeApp();
