@@ -11,7 +11,7 @@ Want to share a short piece of snippet to another device on the network without 
 
 ## Usage
 - Install the [extension](https://chrome.google.com/webstore/detail/wifi-share/kdjhpollblakokcnfhbgmallkelgncbn) from the Chrome Extension Store or go to https://quick-wifi-share.web.app/
-- In the textare, type in the text you wish to share with the other device
+- In the textarea, type in the text you wish to share with the other device
 - On the other device, open the extension or visit the [website](https://quick-wifi-share.web.app/), you should see the text in the text area
 
 - Note: If you don't see the message, ensure that both the devices are on the same network.
@@ -28,6 +28,9 @@ Note: Work on a better algorithm which uses peer to peer communication for trans
 Create a fork and clone it. Run `npm install` to install the required dependencies.
 To start the website in development mode, run `npm run dev`
 To develop the extension, run `npm run dev-extension`. This will generate the extension build in `www/build` folder load it into chrome to test out the extension.
+
+## Bug Reporting
+Report your issues at https://github.com/Pranav2612000/wifi_share/issues
 
 ## Designs
 https://www.figma.com/file/igzN9pSE1sSqZDUyEbdBEf/Wifi-Share
