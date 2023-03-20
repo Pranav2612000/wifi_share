@@ -46,6 +46,11 @@ p {
   margin: 0;
 }
 
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
 input, textarea {
   margin: 0;
   padding: 0;
