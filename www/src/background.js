@@ -177,6 +177,7 @@ const initializeApp = async () => {
 
   // We do nothing if the app is in OFF state
   if (enabled === false) {
+    await stopApp();
     return;
   }
 
