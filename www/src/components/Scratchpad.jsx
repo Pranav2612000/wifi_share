@@ -39,6 +39,7 @@ const getStatusElement = (status) => {
 
 function Scratchpad() {
   const [enabled, setIsEnabled] = useState(true);
+  const [enabledLoading, setIsEnabledLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [text, setText] = useState("");
   const [status, setStatus] = useState(SCRATCHPAD_STATUS.IDLE);
@@ -46,6 +47,7 @@ function Scratchpad() {
   const setExtensionState = async () => {
     const isExtensionEnabled = await getValueFromChromeStorage("enabled");
     setIsEnabled(isExtensionEnabled);
+    setIsEnabledLoading(false);
   };
 
   useEffect(() => {
@@ -53,15 +55,6 @@ function Scratchpad() {
     // in our background script and so don't need to initialize DiscoveryService here
     if (isExtension) {
       setExtensionState();
-
-      const { closeConnection } = connectScratchpadStateWithBackground({
-        setLoading,
-        setText,
-      });
-
-      return function cleanup() {
-        closeConnection();
-      };
     }
 
     new DiscoveryService({
@@ -87,6 +80,21 @@ function Scratchpad() {
       DiscoveryService.kill();
     };
   }, []);
+
+  useEffect(() => {
+    if (enabledLoading === true || enabled === false) {
+      return () => {};
+    }
+
+    const { closeConnection } = connectScratchpadStateWithBackground({
+      setLoading,
+      setText,
+    });
+
+    return function cleanup() {
+      closeConnection();
+    };
+  }, [enabledLoading]);
 
   const onTextUpdate = async (newText) => {
     setStatus(SCRATCHPAD_STATUS.SAVING);
