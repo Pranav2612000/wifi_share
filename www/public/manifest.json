@@ -2,7 +2,7 @@
   "short_name": "Wifi Share",
   "name": "Wifi Share",
   "description": "A minimal browser extension to allow you to share a scratchpad over the network.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "manifest_version": 3,
   "action": {
     "default_popup": "index.html",
