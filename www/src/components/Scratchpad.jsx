@@ -55,6 +55,7 @@ function Scratchpad() {
     // in our background script and so don't need to initialize DiscoveryService here
     if (isExtension) {
       setExtensionState();
+      return () => {};
     }
 
     new DiscoveryService({
