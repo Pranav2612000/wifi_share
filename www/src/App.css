@@ -83,6 +83,22 @@
   animation: rotation 5s infinite linear;
 }
 
+.banner {
+    opacity: 0.5;
+    height: 50px;
+    border: 2px solid var(--green-04);
+    border-radius: 10px;
+    color: var(--green-04);
+
+    box-sizing: border-box;
+    padding: 0.5rem;
+}
+
+.banner h3 {
+    display: inline;
+    margin-right: 0.25rem;
+}
+
 [data-enabled] {
   color: white
 }

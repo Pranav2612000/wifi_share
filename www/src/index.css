@@ -42,6 +42,10 @@ body {
   margin-right: auto;
 }
 
+h1, h2, h3 {
+    margin: 0px;
+}
+
 p {
   margin: 0;
 }
@@ -91,7 +95,7 @@ header {
 }
 
 main {
-  height: calc(100vh - 70px);
+  height: calc(100vh - 130px);
 
   padding-left: var(--page-margin);
   padding-right: var(--page-margin);
